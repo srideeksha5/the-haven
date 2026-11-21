@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Account | THE HAVEN</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+
+</head>
+
+<body>
+
+    <!-- ANNOUNCEMENT BAR -->
+
+    <div class="announcement-bar">
+
+        <p>✦ Free delivery on orders above ₹999</p>
+
+        <div class="announcement-right">
+            <span>India</span>
+            <span>INR ₹</span>
+        </div>
+
+    </div>
+
+
+    <!-- HEADER -->
+
+    <header class="main-header">
+
+        <a href="index.html" class="brand">
+
+            <span class="brand-icon">H</span>
+
+            <span class="brand-name">
+                THE HAVEN
+                <small>EVERYDAY FINDS, BEAUTIFULLY CURATED</small>
+            </span>
+
+        </a>
+
+        <nav class="desktop-nav">
+
+            <a href="index.html">Home</a>
+            <a href="index.html#categories">Categories</a>
+            <a href="index.html#products">Shop</a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="cart.html"
+                class="icon-button"
+                aria-label="Shopping bag">♧</a>
+
+        </div>
+
+    </header>
+
+
+    <!-- AUTHENTICATION PAGE -->
+
+    <main class="auth-page">
+
+
+        <!-- LEFT VISUAL SECTION -->
+
+        <section class="auth-visual">
+
+            <div class="auth-visual-content">
+
+                <span class="eyebrow">
+                    WELCOME TO THE HAVEN
+                </span>
+
+                <h1>
+                    Everyday finds.<br>
+                    <em>Favourite moments.</em>
+                </h1>
+
+                <p>
+                    Your little corner for thoughtful finds,
+                    everyday essentials and things you'll love.
+                </p>
+
+                <div class="auth-visual-note">
+                    DISCOVER · EXPLORE · ENJOY
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT AUTHENTICATION SECTION -->
+
+        <section class="auth-panel">
+
+
+            <!-- LOGIN PANEL -->
+
+            <div class="auth-form-container" id="loginPanel">
+
+                <span class="eyebrow">WELCOME BACK</span>
+
+                <h2>Sign in</h2>
+
+                <p class="auth-subtitle">
+                    It's lovely to have you here again.
+                </p>
+
+                <form id="loginForm" novalidate>
+
+                    <div class="auth-field">
+
+                        <label for="loginEmail">
+                            Email address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="loginEmailError"></small>
+
+                    </div>
+
+
+                    <div class="auth-field">
+
+                        <label for="loginPassword">
+                            Password
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                placeholder="Enter your password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                data-target="loginPassword">
+                                Show
+                            </button>
+
+                        </div>
+
+                        <small class="auth-error"
+                            id="loginPasswordError"></small>
+
+                    </div>
+
+
+                    <div class="auth-options">
+
+                        <label class="remember-option">
+
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                            >
+
+                            Remember me
+
+                        </label>
+
+                        <button
+                            type="button"
+                            class="text-button"
+                            id="showForgot">
+
+                            Forgot password?
+
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button auth-submit">
+
+                        SIGN IN →
+
+                    </button>
+
+                    <p
+                        class="auth-feedback"
+                        id="loginFeedback"
+                        role="status"
+                        aria-live="polite">
+                    </p>
+
+                </form>
+
+
+                <div class="auth-switch">
+
+                    Don't have an account?
+
+                    <button
+                        type="button"
+                        class="text-button"
+                        id="showSignup">
+
+                        Create an account
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SIGNUP PANEL -->
+
+            <div class="auth-form-container"
+                id="signupPanel"
+                hidden>
+
+                <span class="eyebrow">
+                    YOUR HAVEN STARTS HERE
+                </span>
+
+                <h2>Create account</h2>
+
+                <p class="auth-subtitle">
+                    Join us and discover something lovely.
+                </p>
+
+
+                <form id="signupForm" novalidate>
+
+
+                    <div class="auth-field">
+
+                        <label for="signupName">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="signupName"
+                            placeholder="Enter your full name"
+                            maxlength="80"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="signupNameError"></small>
+
+                    </div>
+
+
+                    <div class="auth-field">
+
+                        <label for="signupEmail">
+                            Email address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="signupEmail"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="signupEmailError"></small>
+
+                    </div>
+
+
+                    <div class="auth-field">
+
+                        <label for="signupMobile">
+                            Mobile number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="signupMobile"
+                            placeholder="10-digit mobile number"
+                            maxlength="10"
+                            inputmode="numeric"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="signupMobileError"></small>
+
+                    </div>
+
+
+                    <div class="auth-field">
+
+                        <label for="signupPassword">
+                            Password
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="signupPassword"
+                                placeholder="Create a password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                data-target="signupPassword">
+
+                                Show
+
+                            </button>
+
+                        </div>
+
+                        <small class="auth-hint">
+                            At least 8 characters, including a letter and a number.
+                        </small>
+
+                        <small class="auth-error"
+                            id="signupPasswordError"></small>
+
+                    </div>
+
+
+                    <div class="auth-field">
+
+                        <label for="confirmPassword">
+                            Confirm password
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Enter password again"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                data-target="confirmPassword">
+
+                                Show
+
+                            </button>
+
+                        </div>
+
+                        <small class="auth-error"
+                            id="confirmPasswordError"></small>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button auth-submit">
+
+                        CREATE ACCOUNT →
+
+                    </button>
+
+
+                    <p
+                        class="auth-feedback"
+                        id="signupFeedback"
+                        role="status"
+                        aria-live="polite">
+                    </p>
+
+                </form>
+
+
+                <div class="auth-switch">
+
+                    Already have an account?
+
+                    <button
+                        type="button"
+                        class="text-button"
+                        id="showLogin">
+
+                        Sign in
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FORGOT PASSWORD PANEL -->
+
+            <div class="auth-form-container"
+                id="forgotPanel"
+                hidden>
+
+                <span class="eyebrow">
+                    ACCOUNT RECOVERY
+                </span>
+
+                <h2>Forgot password?</h2>
+
+                <p class="auth-subtitle">
+                    Enter your email address to request a password reset.
+                </p>
+
+
+                <form id="forgotForm" novalidate>
+
+                    <div class="auth-field">
+
+                        <label for="forgotEmail">
+                            Email address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="forgotEmail"
+                            placeholder="Enter your registered email"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="forgotEmailError"></small>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button auth-submit">
+
+                        REQUEST RESET →
+
+                    </button>
+
+
+                    <p
+                        class="auth-feedback"
+                        id="forgotFeedback"
+                        role="status"
+                        aria-live="polite">
+                    </p>
+
+                </form>
+
+
+                <div class="auth-switch">
+
+                    Remember your password?
+
+                    <button
+                        type="button"
+                        class="text-button"
+                        id="backToLogin">
+
+                        Back to sign in
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CUSTOMER PROFILE RECOVERY PANEL -->
+
+            <div class="auth-form-container"
+                id="recoverPanel"
+                hidden>
+
+                <span class="eyebrow">
+                    COMPLETE YOUR REGISTRATION
+                </span>
+
+                <h2>One last step</h2>
+
+                <p class="auth-subtitle">
+
+                    Your account exists. Please complete your
+                    customer details to finish setting up your account.
+
+                </p>
+
+
+                <form id="profileRecoveryForm" novalidate>
+
+
+                    <div class="auth-field">
+
+                        <label for="recoveryName">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="recoveryName"
+                            placeholder="Enter your full name"
+                            maxlength="80"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="recoveryNameError"></small>
+
+                    </div>
+
+
+                    <div class="auth-field">
+
+                        <label for="recoveryMobile">
+                            Mobile number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="recoveryMobile"
+                            placeholder="10-digit mobile number"
+                            maxlength="10"
+                            inputmode="numeric"
+                            required
+                        >
+
+                        <small class="auth-error"
+                            id="recoveryMobileError"></small>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button auth-submit">
+
+                        COMPLETE REGISTRATION →
+
+                    </button>
+
+
+                    <p
+                        class="auth-feedback"
+                        id="recoveryFeedback"
+                        role="status"
+                        aria-live="polite">
+                    </p>
+
+                </form>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 THE HAVEN. All rights reserved.
+            </p>
+
+            <a href="index.html">
+                Continue shopping →
+            </a>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT LIBRARIES -->
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Firebase configuration -->
+    <script src="js/firebase-config.js"></script>
+
+    <!-- Shared API utilities -->
+    <script src="js/api/api-core.js"></script>
+
+    <!-- Authentication API -->
+    <script src="js/api/auth-api.js"></script>
+
+    <!-- Customer API -->
+    <script src="js/api/customer-api.js"></script>
+
+    <!-- Authentication page logic -->
+    <script src="js/auth.js"></script>
+
+</body>
+
+</html>

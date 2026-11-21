@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Account | THE HAVEN</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/account.css">
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="account-header">
+
+        <a href="index.html" class="brand">
+            THE HAVEN<span>.</span>
+        </a>
+
+        <a href="index.html" class="continue-shopping">
+            ← Continue Shopping
+        </a>
+
+    </header>
+
+
+    <!-- MAIN ACCOUNT PAGE -->
+
+    <main class="account-page">
+
+
+        <!-- PAGE HEADING -->
+
+        <section class="account-heading">
+
+            <p class="eyebrow">YOUR PERSONAL SPACE</p>
+
+            <h1>My Account<span>.</span></h1>
+
+            <p>Everything you need, all in one place.</p>
+
+        </section>
+
+
+
+        <!-- WELCOME CARD -->
+
+        <section class="welcome-card">
+
+            <div class="welcome-content">
+
+                <p class="eyebrow">WELCOME BACK</p>
+
+                <h2>
+                    Hello,
+                    <span id="customerName">Customer</span>
+                </h2>
+
+                <p>We're glad to have you here.</p>
+
+            </div>
+
+            <div class="profile-avatar" id="profileAvatar">
+                C
+            </div>
+
+        </section>
+
+
+
+        <!-- ACCOUNT GRID -->
+
+        <section class="account-grid">
+
+
+            <!-- SIDEBAR -->
+
+            <aside class="account-sidebar">
+
+                <p class="sidebar-heading">MY ACCOUNT</p>
+
+
+                <a href="#profile" class="account-menu active">
+                    <span>01</span>
+                    Personal Information
+                </a>
+
+
+                <a href="#credit" class="account-menu">
+                    <span>02</span>
+                    Credit Information
+                </a>
+
+
+                <a href="#orders" class="account-menu">
+                    <span>03</span>
+                    My Orders
+                </a>
+
+
+                <a href="#addresses" class="account-menu">
+                    <span>04</span>
+                    Saved Addresses
+                </a>
+
+
+                <button id="logoutButton" class="logout-button">
+                    ↗ &nbsp; LOG OUT
+                </button>
+
+            </aside>
+
+
+
+            <!-- MAIN CONTENT -->
+
+            <div class="account-content">
+
+
+                <!-- =================================
+                     PERSONAL INFORMATION
+                ================================== -->
+
+                <section class="details-card" id="profile">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <p class="eyebrow">ACCOUNT DETAILS</p>
+
+                            <h2>Personal Information</h2>
+
+                        </div>
+
+                        <span class="status-label" id="accountStatus">
+                            ACTIVE ACCOUNT
+                        </span>
+
+                    </div>
+
+
+                    <div class="detail-row">
+
+                        <span>Full Name</span>
+
+                        <strong id="customerFullName">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-row">
+
+                        <span>Email Address</span>
+
+                        <strong id="customerEmail">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-row">
+
+                        <span>Mobile Number</span>
+
+                        <strong id="customerMobile">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+
+                    <p
+                        class="account-feedback"
+                        id="profileFeedback"
+                        role="status"
+                        aria-live="polite">
+                    </p>
+
+                </section>
+
+
+
+                <!-- =================================
+                     CREDIT INFORMATION
+                ================================== -->
+
+                <section class="details-card secondary-card" id="credit">
+
+                    <p class="eyebrow">PAYMENT INFORMATION</p>
+
+                    <h2>Credit Information</h2>
+
+
+                    <div class="detail-row">
+
+                        <span>Credit Limit</span>
+
+                        <strong id="customerCreditLimit">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-row">
+
+                        <span>Credit Used</span>
+
+                        <strong id="customerCreditUsed">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-row">
+
+                        <span>Available Credit</span>
+
+                        <strong id="customerAvailableCredit">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================
+                     MY ORDERS
+                ================================== -->
+
+                <section class="details-card secondary-card" id="orders">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <p class="eyebrow">YOUR PURCHASES</p>
+
+                            <h2>My Orders</h2>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            id="refreshOrders"
+                            class="order-refresh-button">
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="ordersFeedback"
+                        class="account-feedback"
+                        role="status"
+                        aria-live="polite">
+
+                        Loading your orders...
+
+                    </div>
+
+
+                    <div id="ordersList"></div>
+
+                </section>
+
+
+
+                <!-- =================================
+                     SAVED ADDRESSES
+                ================================== -->
+
+                <section class="details-card secondary-card" id="addresses">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <p class="eyebrow">DELIVERY DETAILS</p>
+
+                            <h2>Saved Addresses</h2>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="addAddressButton"
+                            class="address-action-button">
+
+                            + Add Address
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- ADDRESS FEEDBACK -->
+
+                    <p
+                        id="addressFeedback"
+                        class="account-feedback"
+                        role="status"
+                        aria-live="polite">
+
+                    </p>
+
+
+                    <!-- SAVED ADDRESS LIST -->
+
+                    <div id="addressList"></div>
+
+
+
+                    <!-- ADD / EDIT ADDRESS FORM -->
+
+                    <div
+                        id="addressFormContainer"
+                        class="address-form-container"
+                        hidden>
+
+                        <h3 id="addressFormTitle">
+                            Add New Address
+                        </h3>
+
+
+                        <form id="addressForm">
+
+                            <input
+                                type="hidden"
+                                id="addressId">
+
+
+                            <div class="address-form-grid">
+
+
+                                <!-- FULL NAME -->
+
+                                <div class="form-field">
+
+                                    <label for="addressName">
+                                        Full Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="addressName"
+                                        required
+                                        maxlength="80"
+                                        placeholder="Enter full name">
+
+                                </div>
+
+
+
+                                <!-- MOBILE -->
+
+                                <div class="form-field">
+
+                                    <label for="addressMobile">
+                                        Mobile Number
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="addressMobile"
+                                        maxlength="10"
+                                        pattern="[6-9][0-9]{9}"
+                                        required
+                                        placeholder="10-digit mobile number">
+
+                                </div>
+
+
+
+                                <!-- STREET ADDRESS -->
+
+                                <div class="form-field full-width">
+
+                                    <label for="savedAddress">
+                                        Street Address
+                                    </label>
+
+                                    <textarea
+                                        id="savedAddress"
+                                        rows="3"
+                                        required
+                                        maxlength="300"
+                                        placeholder="House number, street, area">
+
+                                    </textarea>
+
+                                </div>
+
+
+
+                                <!-- CITY -->
+
+                                <div class="form-field">
+
+                                    <label for="addressCity">
+                                        City
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="addressCity"
+                                        required
+                                        maxlength="60"
+                                        placeholder="Enter city">
+
+                                </div>
+
+
+
+                                <!-- STATE -->
+
+                                <div class="form-field">
+
+                                    <label for="addressState">
+                                        State
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="addressState"
+                                        required
+                                        maxlength="60"
+                                        placeholder="Enter state">
+
+                                </div>
+
+
+
+                                <!-- PINCODE -->
+
+                                <div class="form-field">
+
+                                    <label for="addressPincode">
+                                        PIN Code
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="addressPincode"
+                                        maxlength="6"
+                                        pattern="[1-9][0-9]{5}"
+                                        required
+                                        placeholder="6-digit PIN code">
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- DEFAULT ADDRESS OPTION -->
+
+                            <label class="default-address-option">
+
+                                <input
+                                    type="checkbox"
+                                    id="addressIsDefault">
+
+                                Set as my default delivery address
+
+                            </label>
+
+
+
+                            <!-- FORM ACTIONS -->
+
+                            <div class="address-form-actions">
+
+                                <button
+                                    type="submit"
+                                    id="saveAddressButton"
+                                    class="address-action-button">
+
+                                    Save Address
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    id="cancelAddressButton"
+                                    class="address-cancel-button">
+
+                                    Cancel
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer class="account-footer">
+
+        <p>
+            THE HAVEN — A little place for lovely things.
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================
+         JAVASCRIPT LIBRARIES
+    ====================================== -->
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <!-- Firebase Configuration -->
+    <script src="js/firebase-config.js"></script>
+
+
+    <!-- Shared API Utilities -->
+    <script src="js/api/api-core.js"></script>
+
+
+    <!-- Authentication API -->
+    <script src="js/api/auth-api.js"></script>
+
+
+    <!-- Customer API -->
+    <script src="js/api/customer-api.js"></script>
+
+
+    <!-- Address API -->
+    <script src="js/api/address-api.js"></script>
+
+
+    <!-- Order API -->
+    <script src="js/api/order-api.js"></script>
+
+
+    <!-- Account Page Logic -->
+    <script src="js/account.js"></script>
+
+</body>
+
+</html>

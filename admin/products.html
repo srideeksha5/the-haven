@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>THE HAVEN | Product Management</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin/admin.css">
+    <link rel="stylesheet" href="../css/admin/products.css">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <aside class="admin-sidebar">
+
+        <a href="dashboard.html" class="admin-brand">
+            THE HAVEN<span>.</span>
+        </a>
+
+        <p class="sidebar-caption">ADMINISTRATION</p>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="products.html" class="active">Products</a>
+            <a href="customers.html">Customers</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="orders.html">Orders</a>
+            <a href="reports.html">Reports</a>
+        </nav>
+
+        <button id="adminLogout" class="sidebar-logout">
+            Sign out
+        </button>
+
+    </aside>
+
+    <main class="admin-main">
+
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">STORE MANAGEMENT</p>
+                <h1>Products</h1>
+            </div>
+
+            <div class="admin-profile">
+                <div class="avatar">A</div>
+
+                <div>
+                    <strong>Administrator</strong>
+                    <span id="adminEmail">Admin Account</span>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- PRODUCT INTRO -->
+
+        <section class="product-intro">
+
+            <div>
+                <p class="eyebrow">THE HAVEN / INVENTORY</p>
+                <h2>Product catalogue</h2>
+                <p>Manage your store's products, pricing and stock.</p>
+            </div>
+
+            <button id="addProductButton" class="primary-admin-button">
+                + Add Product
+            </button>
+
+        </section>
+
+        <!-- CATEGORY MANAGEMENT -->
+
+        <section class="category-management">
+
+            <div class="category-section-heading">
+
+                <div>
+                    <p class="eyebrow">STORE ORGANISATION</p>
+                    <h2>Manage categories</h2>
+                    <p>Add, rename and control the categories used by your products.</p>
+                </div>
+
+                <button
+                    id="addCategoryButton"
+                    class="primary-admin-button"
+                    type="button">
+                    + Add Category
+                </button>
+
+            </div>
+
+            <p
+                id="categoryFeedback"
+                class="product-feedback"
+                role="status"
+                aria-live="polite">
+            </p>
+
+            <div class="category-table-wrap">
+
+                <table class="category-table">
+
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="categoriesTableBody">
+                        <tr>
+                            <td colspan="4">Loading categories...</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- PRODUCT STATISTICS -->
+
+        <section class="product-stat-row">
+
+            <div class="product-stat">
+                <span>Total Products</span>
+                <strong id="totalProducts">0</strong>
+            </div>
+
+            <div class="product-stat">
+                <span>Active Products</span>
+                <strong id="activeProducts">0</strong>
+            </div>
+
+            <div class="product-stat">
+                <span>Inactive Products</span>
+                <strong id="inactiveProducts">0</strong>
+            </div>
+
+            <div class="product-stat">
+                <span>Low Stock (Below 15)</span>
+                <strong id="lowStockProducts">0</strong>
+            </div>
+
+        </section>
+
+        <!-- PRODUCT MANAGEMENT -->
+
+        <section class="product-management">
+
+            <div class="product-toolbar">
+
+                <input
+                    type="search"
+                    id="productSearch"
+                    placeholder="Search products by title..."
+                >
+
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                </select>
+
+                <select id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+
+            </div>
+
+            <div id="productFeedback" class="product-feedback"></div>
+
+            <div class="table-wrapper">
+
+                <table class="products-table">
+
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="productsTableBody">
+                        <tr>
+                            <td colspan="6">Loading products...</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- PAGINATION -->
+
+            <div class="pagination">
+
+                <span id="paginationInfo">Showing 0 products</span>
+
+                <div>
+                    <button id="previousPage" disabled>Previous</button>
+                    <span id="currentPage">1</span>
+                    <button id="nextPage" disabled>Next</button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- CATEGORY FORM MODAL -->
+
+<div class="admin-modal" id="categoryModal" hidden>
+
+    <div class="modal-content category-modal-content">
+
+        <div class="modal-heading">
+
+            <div>
+                <p class="eyebrow">STORE CATEGORIES</p>
+                <h2 id="categoryModalTitle">Add Category</h2>
+            </div>
+
+            <button
+                type="button"
+                id="closeCategoryModal"
+                class="modal-close"
+                aria-label="Close">
+                ×
+            </button>
+
+        </div>
+
+        <form id="categoryForm">
+
+            <input type="hidden" id="categoryId">
+
+            <div class="form-group">
+
+                <label for="categoryName">Category Name</label>
+
+                <input
+                    type="text"
+                    id="categoryName"
+                    maxlength="60"
+                    required
+                    placeholder="Enter category name"
+                >
+
+            </div>
+
+            <p
+                id="categoryFormFeedback"
+                class="product-feedback"
+                role="alert">
+            </p>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="cancelCategoryForm"
+                    class="secondary-admin-button">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveCategoryButton"
+                    class="primary-admin-button">
+                    Save Category
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- PRODUCT FORM MODAL -->
+
+<div class="admin-modal" id="productModal" hidden>
+
+    <div class="modal-content">
+
+        <div class="modal-heading">
+
+            <div>
+                <p class="eyebrow">PRODUCT CATALOGUE</p>
+                <h2 id="modalTitle">Add Product</h2>
+            </div>
+
+            <button
+                type="button"
+                id="closeProductModal"
+                class="modal-close">
+                ×
+            </button>
+
+        </div>
+
+        <form id="productForm">
+
+            <input type="hidden" id="productId">
+
+            <div class="form-group">
+
+                <label for="productCategory">Category</label>
+
+                <select id="productCategory" required>
+                    <option value="">Select category</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="productTitle">Product Title</label>
+
+                <input
+                    type="text"
+                    id="productTitle"
+                    maxlength="120"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="productDescription">Description</label>
+
+                <textarea
+                    id="productDescription"
+                    rows="4"
+                    required>
+                </textarea>
+
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label for="productQuantity">Quantity</label>
+
+                    <input
+                        type="number"
+                        id="productQuantity"
+                        min="0"
+                        step="1"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="productPrice">Price (₹)</label>
+
+                    <input
+                        type="number"
+                        id="productPrice"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="productImage">Image URL</label>
+
+                <input
+                    type="url"
+                    id="productImage"
+                    placeholder="https://example.com/image.jpg"
+                >
+
+            </div>
+
+            <p id="formFeedback" class="product-feedback"></p>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="cancelProductForm"
+                    class="secondary-admin-button">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveProductButton"
+                    class="primary-admin-button">
+                    Save Product
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- EXTERNAL LIBRARIES -->
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+
+<!-- FIREBASE REST CONFIGURATION -->
+
+<script src="../js/firebase-config.js"></script>
+<script src="../js/api/api-core.js"></script>
+<script src="../js/api/auth-api.js"></script>
+<script src="../js/api/product-api.js"></script>
+<script src="../js/api/category-api.js"></script>
+
+<!-- ADMIN AUTHENTICATION -->
+
+<script src="../js/admin/admin-auth.js"></script>
+
+<!-- PRODUCTS PAGE LOGIC -->
+
+<script src="../js/admin/products.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | THE HAVEN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/product.css">
+</head>
+<body>
+
+    <div class="announcement-bar">
+        <p>✦ Free delivery on orders above ₹999</p>
+        <div class="announcement-right">
+            <span>India</span>
+            <span>INR ₹</span>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <a href="index.html" class="brand">
+            <span class="brand-icon">H</span>
+            <span class="brand-name">
+                THE HAVEN
+                <small>EVERYDAY FINDS, BEAUTIFULLY CURATED</small>
+            </span>
+        </a>
+
+        <nav class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="index.html#categories">Categories</a>
+            <a href="index.html#products" class="active">Shop</a>
+            <a href="index.html#deals">Deals</a>
+        </nav>
+
+        <div class="header-actions">
+            <a href="index.html" class="icon-button" aria-label="Shopping home">⌕</a>
+            <a href="index.html" class="icon-button" aria-label="Shopping bag">♧</a>
+        </div>
+    </header>
+
+    <main class="product-detail-page">
+
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <a href="index.html#products">Shop</a>
+            <span>/</span>
+            <span id="breadcrumbProduct">Product</span>
+        </div>
+
+        <section class="product-detail">
+
+            <div class="detail-gallery">
+                <div class="main-product-image">
+                    <img id="mainProductImage" src="" alt="Product image">
+                </div>
+            </div>
+
+            <div class="detail-information">
+                <span class="eyebrow" id="detailCategory">THE HAVEN COLLECTION</span>
+
+                <h1 id="detailName">Product Name</h1>
+
+                <div class="detail-rating">
+                    <span>★★★★★</span>
+                    <span id="detailRating"></span>
+                    <span id="detailReviews"></span>
+                </div>
+
+                <div class="detail-price">
+                    <strong id="detailPrice"></strong>
+                    <del id="detailOldPrice"></del>
+                    <span class="discount-label" id="detailDiscount"></span>
+                </div>
+                
+
+                <p class="detail-description" id="detailDescription"></p>
+
+                <div class="detail-divider"></div>
+
+                <div class="delivery-info">
+                    <span>♧</span>
+                    <div>
+                        <strong>Delivery information</strong>
+                        <p>Free delivery on orders above ₹999.</p>
+                    </div>
+                </div>
+
+                <div class="quantity-section">
+                    <label for="productQuantity">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" id="decreaseQuantity" aria-label="Decrease quantity">−</button>
+                        <input type="number" id="productQuantity" value="1" min="1" max="10">
+                        <button type="button" id="increaseQuantity" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+
+                <div class="detail-buttons">
+                    <button type="button" class="primary-button" id="detailAddToCart">
+                        ADD TO BAG +
+                    </button>
+                    <button type="button" class="wishlist-detail-button" id="detailWishlist" aria-label="Add to wishlist">
+                        ♡
+                    </button>
+                </div>
+
+                <button type="button" class="buy-now-button" id="buyNow">
+                    BUY NOW →
+                </button>
+
+                <div class="detail-policies">
+                    <p>◇ Secure and safe payments</p>
+                    <p>↺ Easy returns on eligible products</p>
+                    <p>♡ Customer support whenever you need it</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="product-extra">
+            <div>
+                <span class="eyebrow">A CLOSER LOOK</span>
+                <h2>Product details</h2>
+                <p id="productLongDescription"></p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="footer">
+        <div class="footer-bottom">
+            <p>© 2026 THE HAVEN. All rights reserved.</p>
+            <a href="index.html">Continue shopping →</a>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/product.js"></script>
+</body>
+</html>

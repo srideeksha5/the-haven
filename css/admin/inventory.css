@@ -1,0 +1,461 @@
+
+/* =========================================
+   THE HAVEN - INVENTORY MANAGEMENT
+========================================= */
+
+.inventory-welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 35px 0 26px;
+    padding: 29px 30px;
+    border: 1px solid #e9e3d8;
+    border-radius: 9px;
+    background: linear-gradient(115deg, #eee9df, #f8f5ef);
+}
+
+.inventory-welcome h2 {
+    margin-bottom: 8px;
+    color: #2e4035;
+    font-family: "Playfair Display", serif;
+    font-size: 31px;
+    font-weight: 600;
+}
+
+.inventory-welcome > div > p:last-child {
+    color: #77796f;
+    font-size: 12px;
+}
+
+.inventory-refresh {
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid #c9d0c6;
+    border-radius: 5px;
+    background: #fff;
+    color: #354f40;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.inventory-refresh:hover {
+    background: #eef2eb;
+}
+
+/* Statistics */
+
+.inventory-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.inventory-stat-card {
+    min-height: 142px;
+    padding: 21px;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--admin-shadow);
+}
+
+.inventory-stat-card > span {
+    color: #77796f;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.inventory-stat-card h2 {
+    margin-top: 17px;
+    color: #293b30;
+    font-family: "Playfair Display", serif;
+    font-size: 29px;
+    font-weight: 600;
+}
+
+.inventory-stat-card p {
+    margin-top: 6px;
+    color: #96958e;
+    font-size: 10px;
+}
+
+.high-stock-card h2 {
+    color: #47734e;
+}
+
+.low-stock-card h2 {
+    color: #a34e45;
+}
+
+/* Inventory section */
+
+.inventory-section {
+    margin-top: 40px;
+}
+
+.inventory-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.inventory-heading h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.inventory-result-count {
+    color: #85877f;
+    font-size: 11px;
+}
+
+/* Toolbar */
+
+.inventory-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.inventory-search {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 13px;
+    border: 1px solid #e5e3dc;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.inventory-search span {
+    color: #85877f;
+    font-size: 20px;
+}
+
+.inventory-search input {
+    width: 100%;
+    height: 42px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 12px;
+}
+
+.inventory-toolbar select {
+    min-width: 155px;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #e5e3dc;
+    border-radius: 6px;
+    outline: none;
+    background: #fff;
+    color: #454941;
+    font-size: 11px;
+}
+
+/* Inventory table */
+
+.inventory-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--admin-shadow);
+}
+
+.inventory-table {
+    min-width: 1050px;
+}
+
+.inventory-table th {
+    padding: 16px 15px;
+    font-size: 9px;
+}
+
+.inventory-table td {
+    padding: 15px;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.inventory-product-name {
+    display: block;
+    color: #354f40;
+    font-weight: 700;
+}
+
+.inventory-product-id {
+    display: block;
+    margin-top: 4px;
+    color: #a09f96;
+    font-size: 9px;
+}
+
+.inventory-category {
+    color: #77796f;
+}
+
+.inventory-price {
+    color: #354f40;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.stock-quantity {
+    color: #354f40;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Stock indicators */
+
+.stock-level {
+    display: inline-flex;
+    padding: 6px 10px;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.stock-level.high {
+    background: #e8f1e8;
+    color: #47734e;
+}
+
+.stock-level.normal {
+    background: #e9edf5;
+    color: #536b91;
+}
+
+.stock-level.low {
+    background: #f7efdf;
+    color: #96713a;
+}
+
+.stock-level.out {
+    background: #f7e9e7;
+    color: #a34e45;
+}
+
+/* Actions */
+
+.stock-action-button {
+    padding: 7px 11px;
+    border: 1px solid #dfe3db;
+    border-radius: 4px;
+    background: #fff;
+    color: #435b49;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.stock-action-button:hover {
+    background: #f1f3ee;
+}
+
+/* Pagination */
+
+.inventory-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 18px 2px;
+    color: #85877f;
+    font-size: 11px;
+}
+
+.inventory-pagination > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.inventory-pagination button {
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid #dedfd8;
+    border-radius: 4px;
+    background: #fff;
+    color: #435b49;
+    font-size: 10px;
+}
+
+.inventory-pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+/* Stock modal */
+
+.inventory-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(23, 34, 27, 0.52);
+}
+
+.inventory-modal-overlay.show {
+    display: flex;
+}
+
+.inventory-modal {
+    width: 100%;
+    max-width: 440px;
+    padding: 28px;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.16);
+}
+
+.inventory-modal-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 23px;
+}
+
+.inventory-modal-heading h2 {
+    color: #2e4035;
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+}
+
+.modal-close {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: #f2f1ec;
+    color: #4c534b;
+    font-size: 21px;
+}
+
+.stock-product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 14px;
+    border-radius: 6px;
+    background: #f7f6f2;
+}
+
+.stock-product-details span,
+.stock-product-details small {
+    color: #85877f;
+    font-size: 10px;
+}
+
+.stock-product-details strong {
+    color: #354f40;
+    font-size: 13px;
+}
+
+.stock-current {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0 20px;
+    padding: 13px;
+    border: 1px solid #eae8e1;
+    border-radius: 6px;
+}
+
+.stock-current span {
+    color: #85877f;
+    font-size: 11px;
+}
+
+.stock-current strong {
+    color: #354f40;
+    font-size: 17px;
+}
+
+.inventory-modal label {
+    display: block;
+    margin-bottom: 8px;
+    color: #42473f;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.inventory-modal input[type="number"] {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #dedfd8;
+    border-radius: 5px;
+    outline: none;
+    font-size: 13px;
+}
+
+.inventory-modal input:focus {
+    border-color: #647e6b;
+}
+
+.stock-hint {
+    margin-top: 9px;
+    color: #92938b;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.inventory-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 23px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .inventory-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .inventory-welcome {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 22px;
+    }
+
+    .inventory-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .inventory-toolbar select {
+        width: 100%;
+    }
+
+    .inventory-pagination {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .inventory-modal {
+        padding: 21px;
+    }
+}

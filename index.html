@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover thoughtfully selected products at THE HAVEN.">
+    <title>THE HAVEN | Everyday Finds, Beautifully Curated</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <p>✦ Free delivery on orders above ₹999</p>
+        <div class="announcement-right">
+            <span>India</span>
+            <span>INR ₹</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <a href="#" class="brand">
+            <span class="brand-icon">H</span>
+            <span class="brand-name">
+                THE HAVEN
+                <small>EVERYDAY FINDS, BEAUTIFULLY CURATED</small>
+            </span>
+        </a>
+
+        <nav class="desktop-nav">
+            <a href="#" class="active">Home</a>
+            <a href="#categories">Categories</a>
+            <a href="#products">Shop</a>
+            <a href="#deals">Deals</a>
+            <a href="#footer">About</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="icon-button search-toggle" aria-label="Search">⌕</button>
+            <a href="account.html" class="icon-button" aria-label="My account">♙</a>
+            <button class="icon-button" id="wishlistButton" aria-label="Wishlist">
+                ♡ <span class="count" id="wishlistCount">0</span>
+            </button>
+            <a href="cart.html" class="icon-button" aria-label="Shopping cart">
+    ♧ <span class="count" id="cartCount">0</span>
+</a>
+            <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Open menu">☰</button>
+        </div>
+    </header>
+
+    <!-- Search -->
+    <section class="search-section" id="searchSection">
+        <input type="search" id="searchInput" placeholder="Search for products, brands and more...">
+        <button id="searchButton">Search</button>
+    </section>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+        <a href="#">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#products">Shop</a>
+        <a href="#deals">Deals</a>
+        <a href="#footer">About</a>
+    </nav>
+
+    <main>
+
+        <!-- Hero -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <span class="eyebrow">THE HAVEN COLLECTION · 2026</span>
+                <h1>Find your next<br> <span>favourite.</span></h1>
+                <p>
+                    From everyday essentials to little luxuries,
+                    discover things that make life more beautiful.
+                </p>
+                <a href="#products" class="primary-button">EXPLORE COLLECTION <span>→</span></a>
+
+                <div class="hero-note">
+                    <span>✦</span> A little something for everyone.
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <img
+                    src="https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?auto=format&fit=crop&w=1200&q=85"
+                    alt="Beautifully styled modern home interior"
+                >
+                <div class="hero-image-label">
+                    <span>THE EDIT</span>
+                    <strong>Thoughtful finds.<br>Everyday living.</strong>
+                </div>
+            </div>
+
+            <div class="hero-side-text">DISCOVER · EXPLORE · ENJOY</div>
+        </section>
+
+        <!-- Benefits -->
+        <section class="benefits">
+            <div class="benefit">
+                <span class="benefit-icon">♧</span>
+                <div>
+                    <strong>Free Delivery</strong>
+                    <p>On orders above ₹999</p>
+                </div>
+            </div>
+            <div class="benefit">
+                <span class="benefit-icon">↺</span>
+                <div>
+                    <strong>Easy Returns</strong>
+                    <p>Hassle-free returns</p>
+                </div>
+            </div>
+            <div class="benefit">
+                <span class="benefit-icon">◇</span>
+                <div>
+                    <strong>Secure Payments</strong>
+                    <p>Safe and secure checkout</p>
+                </div>
+            </div>
+            <div class="benefit">
+                <span class="benefit-icon">♡</span>
+                <div>
+                    <strong>Here to Help</strong>
+                    <p>Customer support</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="section" id="categories">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">EXPLORE THE HAVEN</span>
+                    <h2>Shop by category</h2>
+                </div>
+                <a href="#products" class="text-link">VIEW ALL CATEGORIES ↗</a>
+            </div>
+
+            <div class="category-grid">
+                <button class="category-card" data-category="Electronics">
+                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=500&q=80" alt="Electronics">
+                    <span>Electronics</span>
+                    <small>Explore collection →</small>
+                </button>
+
+                <button class="category-card" data-category="Fashion">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=500&q=80" alt="Fashion">
+                    <span>Fashion</span>
+                    <small>Explore collection →</small>
+                </button>
+
+                <button class="category-card" data-category="Beauty">
+                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=500&q=80" alt="Beauty">
+                    <span>Beauty</span>
+                    <small>Explore collection →</small>
+                </button>
+
+                <button class="category-card" data-category="Home">
+                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=500&q=80" alt="Home">
+                    <span>Home & Living</span>
+                    <small>Explore collection →</small>
+                </button>
+
+                <button class="category-card" data-category="Sports">
+                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=500&q=80" alt="Sports">
+                    <span>Sports</span>
+                    <small>Explore collection →</small>
+                </button>
+
+                <button class="category-card" data-category="Books">
+                    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=500&q=80" alt="Books">
+                    <span>Books</span>
+                    <small>Explore collection →</small>
+                </button>
+            </div>
+        </section>
+
+        <!-- Promotional Banner -->
+        <section class="promo-banner" id="deals">
+            <div class="promo-content">
+                <span class="eyebrow">A LITTLE SOMETHING EXTRA</span>
+                <h2>Good finds.<br><em>Even better prices.</em></h2>
+                <p>Discover handpicked deals across your favourite categories.</p>
+                <a href="#products" class="light-button">SHOP THE DEALS →</a>
+            </div>
+            <div class="promo-image">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1000&q=85" alt="Shopping collection">
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section class="section products-section" id="products">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">SOMETHING YOU'LL LOVE</span>
+                    <h2>Our best picks</h2>
+                </div>
+                <a href="#products" class="text-link" id="viewAllProducts">VIEW ALL PRODUCTS ↗</a>
+            </div>
+
+            <div class="filter-row">
+                <div class="filter-buttons" id="filterButtons">
+                    <button class="filter-button active" data-category="All">All</button>
+                    <button class="filter-button" data-category="Electronics">Electronics</button>
+                    <button class="filter-button" data-category="Fashion">Fashion</button>
+                    <button class="filter-button" data-category="Beauty">Beauty</button>
+                    <button class="filter-button" data-category="Home">Home</button>
+                    <button class="filter-button" data-category="Sports">Sports</button>
+                    <button class="filter-button" data-category="Books">Books</button>
+                </div>
+
+                <select id="sortSelect" aria-label="Sort products">
+                    <option value="default">Sort by: Featured</option>
+                    <option value="low">Price: Low to High</option>
+                    <option value="high">Price: High to Low</option>
+                </select>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+            <p class="empty-message" id="emptyMessage" hidden>No products found. Try another search.</p>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter">
+            <span class="eyebrow">A NOTE FROM THE HAVEN</span>
+            <h2>Good things, delivered.</h2>
+            <p>Sign up for new arrivals, thoughtful finds and little surprises.</p>
+            <form id="newsletterForm">
+                <input type="email" id="newsletterEmail" placeholder="Your email address" required>
+                <button type="submit">SUBSCRIBE →</button>
+            </form>
+            <small id="newsletterMessage">By subscribing, you agree to receive occasional updates.</small>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <a href="#" class="brand">
+                    <span class="brand-icon">H</span>
+                    <span class="brand-name">
+                        THE HAVEN
+                        <small>EVERYDAY FINDS, BEAUTIFULLY CURATED</small>
+                    </span>
+                </a>
+                <p>A thoughtful collection of things<br>that make everyday living better.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>EXPLORE</h4>
+                <a href="#categories">Categories</a>
+                <a href="#products">Shop all</a>
+                <a href="#deals">Special offers</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>HELP</h4>
+                <a href="#">Contact us</a>
+                <a href="#">Shipping information</a>
+                <a href="#">Returns & refunds</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>THE HAVEN</h4>
+                <a href="#">About us</a>
+                <a href="#">Privacy policy</a>
+                <a href="#">Terms & conditions</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 THE HAVEN. All rights reserved.</p>
+            <p>Made for everyday living. ♡</p>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="drawer-heading">
+            <h2>Your shopping bag</h2>
+            <button id="closeCart" aria-label="Close cart">×</button>
+        </div>
+        <div id="cartItems" class="cart-items">
+            <p class="cart-empty">Your bag is waiting for something lovely.</p>
+        </div>
+        <div class="cart-summary">
+            <div class="subtotal-row">
+                <span>Subtotal</span>
+                <strong id="cartSubtotal">₹0</strong>
+            </div>
+            <p>Shipping and taxes calculated at checkout.</p>
+            <button class="primary-button checkout-button" id="checkoutButton">CONTINUE TO CHECKOUT →</button>
+        </div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Firebase Configuration -->
+<script src="js/firebase-config.js"></script>
+
+<!-- API Core -->
+<script src="js/api/api-core.js"></script>
+
+<!-- Product API -->
+<script src="js/api/product-api.js"></script>
+
+<!-- Homepage JavaScript -->
+<script src="js/script.js"></script>
+</body>
+</html>

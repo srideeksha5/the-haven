@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>THE HAVEN | Inventory Management</title>
+
+    <link rel="stylesheet" href="../css/admin/admin.css">
+    <link rel="stylesheet" href="../css/admin/inventory.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <a href="dashboard.html" class="brand">
+            <h2>THE HAVEN</h2>
+            <span>ADMINISTRATION</span>
+        </a>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="products.html" class="nav-link">Products</a>
+            <a href="inventory.html" class="nav-link active">Inventory</a>
+            <a href="customers.html" class="nav-link">Customers</a>
+            <a href="orders.html" class="nav-link">Orders</a>
+            <a href="reports.html" class="nav-link">Reports</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-note">
+                <span class="status-dot"></span>
+                Store management
+            </div>
+
+            <button type="button" id="adminLogout" class="logout-button">
+                Sign Out
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">STOCK MANAGEMENT</p>
+                <h1>Inventory</h1>
+            </div>
+
+            <div class="admin-profile">
+                <div class="avatar">A</div>
+
+                <div class="admin-profile-details">
+                    <strong>Administrator</strong>
+                    <span id="adminEmail">Admin Account</span>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- Welcome -->
+        <section class="inventory-welcome">
+
+            <div>
+                <p class="eyebrow">THE HAVEN / INVENTORY</p>
+                <h2>Every item, accounted for.</h2>
+                <p>Monitor stock levels and keep your store running smoothly.</p>
+            </div>
+
+            <button type="button" id="refreshInventory" class="inventory-refresh">
+                ↻ Refresh Stock
+            </button>
+
+        </section>
+
+        <!-- Statistics -->
+        <section class="inventory-stats">
+
+            <article class="inventory-stat-card">
+                <span>Total Products</span>
+                <h2 id="totalProducts">—</h2>
+                <p>Products in inventory</p>
+            </article>
+
+            <article class="inventory-stat-card">
+                <span>Total Units</span>
+                <h2 id="totalUnits">—</h2>
+                <p>Combined available stock</p>
+            </article>
+
+            <article class="inventory-stat-card high-stock-card">
+                <span>High Stock</span>
+                <h2 id="highStockCount">—</h2>
+                <p>Quantity greater than 100</p>
+            </article>
+
+            <article class="inventory-stat-card low-stock-card">
+                <span>Low Stock</span>
+                <h2 id="lowStockCount">—</h2>
+                <p>Quantity below 15</p>
+            </article>
+
+        </section>
+
+        <!-- Inventory List -->
+        <section class="inventory-section">
+
+            <div class="inventory-heading">
+
+                <div>
+                    <p class="eyebrow">STOCK OVERVIEW</p>
+                    <h2>Product Inventory</h2>
+                </div>
+
+                <span id="inventoryResultCount" class="inventory-result-count">
+                    0 products
+                </span>
+
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="inventory-toolbar">
+
+                <div class="inventory-search">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="inventorySearch"
+                        placeholder="Search products..."
+                    >
+                </div>
+
+                <select id="inventoryCategory">
+                    <option value="all">All Categories</option>
+                </select>
+
+                <select id="inventoryStockFilter">
+                    <option value="all">All Stock</option>
+                    <option value="high">High Stock (&gt; 100)</option>
+                    <option value="normal">Normal Stock (15–100)</option>
+                    <option value="low">Low Stock (&lt; 15)</option>
+                    <option value="out">Out of Stock (0)</option>
+                </select>
+
+            </div>
+
+            <div id="inventoryFeedback" class="feedback" role="status"></div>
+
+            <!-- Table -->
+            <div class="inventory-table-wrapper">
+
+                <table class="inventory-table">
+
+                    <thead>
+                        <tr>
+                            <th>PRODUCT</th>
+                            <th>CATEGORY</th>
+                            <th>PRICE</th>
+                            <th>AVAILABLE STOCK</th>
+                            <th>STOCK LEVEL</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="inventoryTableBody">
+
+                        <tr>
+                            <td colspan="7" class="table-message">
+                                Loading inventory...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="inventory-pagination">
+
+                <span id="inventoryPaginationInfo">
+                    Showing 0 products
+                </span>
+
+                <div>
+                    <button type="button" id="inventoryPrevious" disabled>
+                        Previous
+                    </button>
+
+                    <span id="inventoryCurrentPage">1</span>
+
+                    <button type="button" id="inventoryNext" disabled>
+                        Next
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- Quantity Update Modal -->
+<div class="inventory-modal-overlay" id="stockModal">
+
+    <div class="inventory-modal">
+
+        <div class="inventory-modal-heading">
+
+            <div>
+                <p class="eyebrow">STOCK MANAGEMENT</p>
+                <h2>Update Stock</h2>
+            </div>
+
+            <button type="button" id="closeStockModal" class="modal-close">
+                ×
+            </button>
+
+        </div>
+
+        <form id="stockForm">
+
+            <input type="hidden" id="stockProductId">
+
+            <div class="stock-product-details">
+                <span>Product</span>
+                <strong id="stockProductName">—</strong>
+                <small id="stockProductCategory">—</small>
+            </div>
+
+            <div class="stock-current">
+                <span>Current Quantity</span>
+                <strong id="currentStockQuantity">0</strong>
+            </div>
+
+            <label for="newStockQuantity">New Stock Quantity</label>
+
+            <input
+                type="number"
+                id="newStockQuantity"
+                min="0"
+                step="1"
+                required
+                placeholder="Enter quantity"
+            >
+
+            <p class="stock-hint">
+                Enter the new total available quantity for this product.
+            </p>
+
+            <div class="inventory-modal-actions">
+
+                <button type="button" id="cancelStockUpdate" class="secondary-button">
+                    Cancel
+                </button>
+
+                <button type="submit" id="saveStockButton" class="primary-button">
+                    Update Stock
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Libraries -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Firebase and API files -->
+<script src="../js/firebase-config.js"></script>
+<script src="../js/api/api-core.js"></script>
+<script src="../js/api/auth-api.js"></script>
+<script src="../js/api/product-api.js"></script>
+<script src="../js/api/inventory-api.js"></script>
+<script src="../js/api/category-api.js"></script>
+
+<!-- Admin scripts -->
+<script src="../js/admin/admin-auth.js"></script>
+<script src="../js/admin/inventory.js"></script>
+
+</body>
+</html>

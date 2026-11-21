@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | THE HAVEN Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin/admin.css">
+    <link rel="stylesheet" href="../css/admin/reports.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <a href="dashboard.html" class="admin-brand">THE HAVEN<span>.</span></a>
+        <p class="sidebar-caption">ADMINISTRATION</p>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="products.html">Products</a>
+            <a href="customers.html">Customers</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="orders.html">Orders</a>
+            <a href="reports.html" class="active">Reports</a>
+        </nav>
+
+        <button class="sidebar-logout" id="logoutBtn">Sign out</button>
+    </aside>
+
+    <main class="admin-main">
+
+        <header class="reports-header">
+            <div>
+                <p class="eyebrow">BUSINESS INTELLIGENCE</p>
+                <h1>Reports</h1>
+                <p class="page-description">
+                    Understand customers, inventory and sales performance.
+                </p>
+            </div>
+
+            <button class="report-refresh" id="refreshReportBtn">
+                ↻ Refresh
+            </button>
+        </header>
+
+        <section class="report-summary">
+            <article class="report-summary-card">
+                <span>Customers</span>
+                <strong id="customerCount">—</strong>
+                <small>Registered customers</small>
+            </article>
+
+            <article class="report-summary-card">
+                <span>Products</span>
+                <strong id="productCount">—</strong>
+                <small>Inventory records</small>
+            </article>
+
+            <article class="report-summary-card">
+                <span>Units in stock</span>
+                <strong id="stockCount">—</strong>
+                <small>Available inventory quantity</small>
+            </article>
+
+            <article class="report-summary-card">
+                <span>Total orders</span>
+                <strong id="orderCount">—</strong>
+                <small>Orders in selected period</small>
+            </article>
+        </section>
+
+        <section class="report-workspace">
+
+            <div class="report-heading">
+                <div>
+                    <h2>Generate a report</h2>
+                    <p>Select a report category and the information you need.</p>
+                </div>
+            </div>
+
+            <div class="report-controls">
+
+                <div class="report-field">
+                    <label for="reportGroup">Report category</label>
+                    <select id="reportGroup">
+                        <option value="CUSTOMERS">Customer reports</option>
+                        <option value="INVENTORY">Inventory reports</option>
+                        <option value="SALES">Sales reports</option>
+                    </select>
+                </div>
+
+                <div class="report-field">
+                    <label for="reportType">Report type</label>
+                    <select id="reportType"></select>
+                </div>
+
+                <div class="report-field date-field">
+                    <label for="startDate">Start date</label>
+                    <input type="date" id="startDate">
+                </div>
+
+                <div class="report-field date-field">
+                    <label for="endDate">End date</label>
+                    <input type="date" id="endDate">
+                </div>
+
+                <div class="report-field category-field" id="categoryField">
+                    <label for="categorySelect">Category</label>
+                    <select id="categorySelect">
+                        <option value="">All categories</option>
+                    </select>
+                </div>
+
+                <button class="generate-report-btn" id="generateReportBtn">
+                    Generate report
+                </button>
+
+            </div>
+
+            <div id="reportMessage" class="report-message"></div>
+
+            <div class="report-results">
+
+                <div class="results-header">
+                    <div>
+                        <p class="eyebrow">REPORT RESULTS</p>
+                        <h2 id="resultsTitle">Customer reports</h2>
+                        <p id="resultsDescription">Choose a report to view its results.</p>
+                    </div>
+
+                    <button id="exportReportBtn" class="export-btn" disabled>
+                        ↓ Export CSV
+                    </button>
+                </div>
+
+                <div class="results-summary" id="resultsSummary"></div>
+
+                <div class="report-table-wrapper">
+                    <table class="report-table">
+                        <thead id="reportTableHead">
+                            <tr>
+                                <th>Information</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr>
+                                <td class="empty-report">
+                                    Select a report and click Generate report.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="report-footer" id="reportFooter"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="../js/api/api-core.js"></script>
+<script src="../js/api/auth-api.js"></script>
+<script src="../js/api/product-api.js"></script>
+<script src="../js/api/customer-api.js"></script>
+<script src="../js/api/inventory-api.js"></script>
+<script src="../js/api/category-api.js"></script>
+<script src="../js/api/report-api.js"></script>
+<script src="../js/admin/admin-auth.js"></script>
+<script src="../js/admin/reports.js"></script>
+
+</body>
+</html>

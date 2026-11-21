@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Shopping Bag | THE HAVEN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+
+    <div class="announcement-bar">
+        <p>✦ Free delivery on orders above ₹999</p>
+        <div class="announcement-right">
+            <span>India</span>
+            <span>INR ₹</span>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <a href="index.html" class="brand">
+            <span class="brand-icon">H</span>
+            <span class="brand-name">
+                THE HAVEN
+                <small>EVERYDAY FINDS, BEAUTIFULLY CURATED</small>
+            </span>
+        </a>
+
+        <nav class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="index.html#categories">Categories</a>
+            <a href="index.html#products">Shop</a>
+            <a href="index.html#deals">Deals</a>
+        </nav>
+
+        <div class="header-actions">
+            <a href="index.html#products" class="icon-button" aria-label="Continue shopping">⌕</a>
+        </div>
+    </header>
+
+    <main class="cart-page">
+
+        <div class="cart-breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>Shopping bag</span>
+        </div>
+
+        <div class="cart-page-heading">
+            <div>
+                <span class="eyebrow">YOUR HAVEN SELECTION</span>
+                <h1>Your shopping bag</h1>
+                <p id="cartItemCount">Your selected items are waiting for you.</p>
+            </div>
+
+            <a href="index.html#products" class="continue-link">← CONTINUE SHOPPING</a>
+        </div>
+
+        <div class="cart-layout">
+
+            <section class="cart-products-section">
+                <div class="cart-products-heading">
+                    <span>PRODUCT</span>
+                    <span>PRICE</span>
+                    <span>QUANTITY</span>
+                    <span>TOTAL</span>
+                </div>
+
+                <div id="cartProductList"></div>
+
+                <div class="cart-empty-state" id="emptyCart" hidden>
+                    <div class="empty-cart-icon">♧</div>
+                    <h2>Your bag is feeling a little empty.</h2>
+                    <p>Discover something lovely and make it yours.</p>
+                    <a href="index.html#products" class="primary-button">
+                        EXPLORE PRODUCTS →
+                    </a>
+                </div>
+            </section>
+
+            <aside class="order-summary">
+                <span class="eyebrow">YOUR ORDER</span>
+                <h2>Order summary</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong id="subtotal">₹0</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <strong id="deliveryCharge">₹0</strong>
+                </div>
+
+                <div class="free-delivery-message" id="deliveryMessage">
+                    Add products to your bag to see delivery information.
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row grand-total">
+                    <span>Estimated total</span>
+                    <strong id="grandTotal">₹0</strong>
+                </div>
+
+                <p class="tax-note">Inclusive of applicable taxes.</p>
+
+                <button type="button" class="primary-button checkout-button" id="proceedCheckout">
+                    PROCEED TO CHECKOUT →
+                </button>
+
+                <div class="secure-note">
+                    <span>◇</span>
+                    Secure and safe shopping experience
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>© 2026 THE HAVEN. All rights reserved.</p>
+            <a href="index.html">Continue shopping →</a>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/api/api-core.js"></script>
+<script src="js/api/auth-api.js"></script>
+<script src="js/api/product-api.js"></script>
+<script src="js/api/cart-api.js"></script>
+
+<script src="js/cart.js"></script>
+</body>
+</html>

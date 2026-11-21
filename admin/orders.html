@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders | THE HAVEN Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin/admin.css">
+    <link rel="stylesheet" href="../css/admin/orders.css">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <aside class="admin-sidebar">
+
+        <a href="dashboard.html" class="admin-brand">
+            THE HAVEN<span>.</span>
+        </a>
+
+        <p class="sidebar-caption">ADMINISTRATION</p>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="products.html">Products</a>
+            <a href="customers.html">Customers</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="orders.html" class="active">Orders</a>
+            <a href="reports.html">Reports</a>
+        </nav>
+
+        <button class="sidebar-logout" id="logoutBtn">
+            Sign out
+        </button>
+
+    </aside>
+
+
+    <main class="admin-main">
+
+        <header class="orders-header">
+
+            <div>
+                <p class="eyebrow">COMMERCE MANAGEMENT</p>
+                <h1>Orders</h1>
+                <p class="page-description">
+                    Review customer orders and manage their fulfilment status.
+                </p>
+            </div>
+
+            <button class="refresh-btn" id="refreshBtn">
+                ↻ Refresh
+            </button>
+
+        </header>
+
+
+        <!-- ORDER STATISTICS -->
+
+        <section class="order-stats">
+
+            <article class="stat-card">
+                <span>Total orders</span>
+                <strong id="totalOrders">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Placed</span>
+                <strong id="placedOrders">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Processing</span>
+                <strong id="processingOrders">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Delivered</span>
+                <strong id="deliveredOrders">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Cancelled</span>
+                <strong id="cancelledOrders">0</strong>
+            </article>
+
+        </section>
+
+
+        <!-- ORDER RECORDS -->
+
+        <section class="orders-panel">
+
+            <div class="orders-toolbar">
+
+                <div>
+                    <h2>Order records</h2>
+                    <p>Search and filter customer orders.</p>
+                </div>
+
+                <input
+                    type="search"
+                    id="orderSearch"
+                    placeholder="Search order or customer ID..."
+                >
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div class="order-filters">
+
+                <select id="statusFilter">
+                    <option value="ALL">All statuses</option>
+                    <option value="PLACED">Placed</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="SHIPPED">Shipped</option>
+                    <option value="DELIVERED">Delivered</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+
+                <select id="paymentFilter">
+                    <option value="ALL">All payment methods</option>
+                    <option value="CASH">Cash</option>
+                    <option value="CREDIT">Credit</option>
+                </select>
+
+            </div>
+
+
+            <!-- MESSAGES -->
+
+            <div id="ordersMessage" class="orders-message"></div>
+
+
+            <!-- ORDERS TABLE -->
+
+            <div class="table-wrapper">
+
+                <table class="orders-table">
+
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Payment status</th>
+                            <th>Order status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="ordersTableBody">
+
+                        <tr>
+                            <td colspan="8" class="empty-cell">
+                                Loading orders...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- PAGINATION -->
+
+            <div class="orders-pagination">
+
+                <span id="paginationInfo">
+                    Showing 0 orders
+                </span>
+
+                <div>
+                    <button id="previousPage" disabled>
+                        Previous
+                    </button>
+
+                    <button id="nextPage" disabled>
+                        Next
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ORDER DETAILS MODAL -->
+
+<div class="order-modal-backdrop" id="orderModal">
+
+    <div class="order-modal">
+
+        <div class="modal-heading">
+
+            <div>
+                <p class="eyebrow">ORDER INFORMATION</p>
+                <h2 id="modalOrderTitle">Order details</h2>
+            </div>
+
+            <button class="modal-close" id="closeOrderModal">
+                &times;
+            </button>
+
+        </div>
+
+        <div id="orderDetailsContent"></div>
+
+        <div class="modal-actions">
+            <button class="secondary-btn" id="closeDetailsBtn">
+                Close
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- JAVASCRIPT DEPENDENCIES -->
+
+<!-- Axios must load before api-core.js -->
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+
+<!-- Firebase configuration -->
+<script src="../js/firebase-config.js"></script>
+
+<!-- Core API -->
+<script src="../js/api/api-core.js"></script>
+
+<!-- Authentication API -->
+<script src="../js/api/auth-api.js"></script>
+
+<!-- Order API -->
+<script src="../js/api/order-api.js"></script>
+
+<!-- Payment API -->
+<script src="../js/api/payment-api.js"></script>
+
+<!-- Admin authentication -->
+<script src="../js/admin/admin-auth.js"></script>
+
+<!-- Orders page functionality - load last -->
+<script src="../js/admin/orders.js"></script>
+
+</body>
+</html>

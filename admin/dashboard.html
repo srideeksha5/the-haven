@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>THE HAVEN | Admin Dashboard</title>
+
+    <link rel="stylesheet" href="../css/admin/admin.css">
+    <link rel="stylesheet" href="../css/admin/dashboard.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <aside class="sidebar">
+
+            <a href="dashboard.html" class="brand">
+                <h2>THE HAVEN</h2>
+                <span>ADMINISTRATION</span>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="inventory.html" class="nav-link">Inventory</a>
+                <a href="customers.html" class="nav-link">Customers</a>
+                <a href="orders.html" class="nav-link">Orders</a>
+                <a href="reports.html" class="nav-link">Reports</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <span class="status-dot"></span>
+                    Store management
+                </div>
+
+                <button type="button" id="adminLogout" class="logout-button">
+                    <span>↗</span> Sign Out
+                </button>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div class="topbar-heading">
+                    <p class="eyebrow">MANAGEMENT OVERVIEW</p>
+                    <h1>Dashboard</h1>
+                </div>
+
+                <div class="admin-profile">
+                    <div class="avatar">A</div>
+
+                    <div class="admin-profile-details">
+                        <strong>Administrator</strong>
+                        <span id="adminEmail">Admin Account</span>
+                    </div>
+                </div>
+
+            </header>
+
+            <section class="welcome-section">
+
+                <div>
+                    <p class="eyebrow">THE HAVEN / ADMINISTRATION</p>
+                    <h2>Welcome back.</h2>
+                    <p>Here's what's happening with your store today.</p>
+                </div>
+
+                <div class="welcome-date" id="dashboardDate"></div>
+
+            </section>
+
+            <section class="stats-grid">
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Total Orders</span>
+                        <span class="stat-icon">▤</span>
+                    </div>
+                    <h2 id="totalOrders">—</h2>
+                    <p>All recorded orders</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Placed Orders</span>
+                        <span class="stat-icon">◷</span>
+                    </div>
+                    <h2 id="placedOrders">—</h2>
+                    <p>Awaiting processing</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Delivered Orders</span>
+                        <span class="stat-icon">✓</span>
+                    </div>
+                    <h2 id="deliveredOrders">—</h2>
+                    <p>Successfully delivered</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Cancelled Orders</span>
+                        <span class="stat-icon">×</span>
+                    </div>
+                    <h2 id="cancelledOrders">—</h2>
+                    <p>Cancelled transactions</p>
+                </article>
+
+            </section>
+
+            <section class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="eyebrow">RECENT ACTIVITY</p>
+                        <h2>Recent Orders</h2>
+                    </div>
+
+                    <a href="orders.html" class="view-all-link">
+                        View all orders <span>→</span>
+                    </a>
+
+                </div>
+
+                <div id="dashboardFeedback" class="feedback" role="status"></div>
+
+                <div class="table-wrapper">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ORDER ID</th>
+                                <th>CUSTOMER ID</th>
+                                <th>AMOUNT</th>
+                                <th>PAYMENT</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recentOrders">
+                            <tr>
+                                <td colspan="5" class="table-message">
+                                    Loading orders...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="dashboard-footer">
+                    <span>THE HAVEN</span>
+                    <span>Store administration</span>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Firebase and API files -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/api/api-core.js"></script>
+    <script src="../js/api/auth-api.js"></script>
+    <script src="../js/api/order-api.js"></script>
+
+    <!-- Admin scripts -->
+    <script src="../js/admin/admin-auth.js"></script>
+    <script src="../js/admin/dashboard.js"></script>
+
+</body>
+</html>

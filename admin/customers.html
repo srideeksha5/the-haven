@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>THE HAVEN | Customer Management</title>
+
+    <link rel="stylesheet" href="../css/admin/admin.css">
+    <link rel="stylesheet" href="../css/admin/customers.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <a href="dashboard.html" class="brand">
+            <h2>THE HAVEN</h2>
+            <span>ADMINISTRATION</span>
+        </a>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="products.html" class="nav-link">Products</a>
+            <a href="inventory.html" class="nav-link">Inventory</a>
+            <a href="customers.html" class="nav-link active">Customers</a>
+            <a href="orders.html" class="nav-link">Orders</a>
+            <a href="reports.html" class="nav-link">Reports</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-note">
+                <span class="status-dot"></span>
+                Store management
+            </div>
+
+            <button type="button" id="adminLogout" class="logout-button">
+                Sign Out
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">CUSTOMER MANAGEMENT</p>
+                <h1>Customers</h1>
+            </div>
+
+            <div class="admin-profile">
+                <div class="avatar">A</div>
+
+                <div class="admin-profile-details">
+                    <strong>Administrator</strong>
+                    <span id="adminEmail">Admin Account</span>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- Welcome -->
+        <section class="customers-welcome">
+
+            <div>
+                <p class="eyebrow">THE HAVEN / CUSTOMERS</p>
+                <h2>Know your customers.</h2>
+                <p>Manage customer accounts, credit limits and account activity.</p>
+            </div>
+
+            <div class="customer-count-label">
+                <span id="customerCount">0</span>
+                <small>Registered customers</small>
+            </div>
+
+        </section>
+
+        <!-- Statistics -->
+        <section class="customer-stats">
+
+            <article class="customer-stat-card">
+                <span>Total Customers</span>
+                <h2 id="totalCustomers">—</h2>
+                <p>All registered accounts</p>
+            </article>
+
+            <article class="customer-stat-card">
+                <span>Active Customers</span>
+                <h2 id="activeCustomers">—</h2>
+                <p>Currently active accounts</p>
+            </article>
+
+            <article class="customer-stat-card">
+                <span>Inactive Customers</span>
+                <h2 id="inactiveCustomers">—</h2>
+                <p>Deactivated accounts</p>
+            </article>
+
+            <article class="customer-stat-card">
+                <span>Credit Assigned</span>
+                <h2 id="totalCredit">—</h2>
+                <p>Combined customer credit limits</p>
+            </article>
+
+        </section>
+
+        <!-- Customer Table -->
+        <section class="customers-section">
+
+            <div class="customers-section-heading">
+
+                <div>
+                    <p class="eyebrow">CUSTOMER DIRECTORY</p>
+                    <h2>All Customers</h2>
+                </div>
+
+                <button type="button" id="refreshCustomers" class="secondary-button">
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="customer-toolbar">
+
+                <div class="customer-search">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="customerSearch"
+                        placeholder="Search by name, email or mobile..."
+                    >
+                </div>
+
+                <select id="customerStatusFilter">
+                    <option value="all">All Customers</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+
+            </div>
+
+            <div id="customersFeedback" class="feedback" role="status"></div>
+
+            <div class="customers-table-wrapper">
+
+                <table class="customers-table">
+
+                    <thead>
+                        <tr>
+                            <th>CUSTOMER</th>
+                            <th>MOBILE</th>
+                            <th>CREDIT LIMIT</th>
+                            <th>CREDIT USED</th>
+                            <th>AVAILABLE CREDIT</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="customersTableBody">
+
+                        <tr>
+                            <td colspan="7" class="table-message">
+                                Loading customers...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="customer-pagination">
+
+                <span id="paginationInfo">Showing 0 customers</span>
+
+                <div>
+                    <button type="button" id="previousPage" disabled>
+                        Previous
+                    </button>
+
+                    <span id="currentPage">1</span>
+
+                    <button type="button" id="nextPage" disabled>
+                        Next
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- Credit Limit Modal -->
+<div class="customer-modal-overlay" id="creditModal">
+
+    <div class="customer-modal">
+
+        <div class="modal-heading">
+            <div>
+                <p class="eyebrow">ACCOUNT MANAGEMENT</p>
+                <h2>Update Credit Limit</h2>
+            </div>
+
+            <button type="button" id="closeCreditModal" class="modal-close">
+                ×
+            </button>
+        </div>
+
+        <form id="creditForm">
+
+            <input type="hidden" id="creditCustomerId">
+
+            <div class="modal-customer-details">
+                <span>Customer</span>
+                <strong id="creditCustomerName">—</strong>
+                <small id="creditCustomerEmail">—</small>
+            </div>
+
+            <div class="credit-current-info">
+
+                <div>
+                    <span>Current Limit</span>
+                    <strong id="currentCreditLimit">₹0</strong>
+                </div>
+
+                <div>
+                    <span>Credit Used</span>
+                    <strong id="currentCreditUsed">₹0</strong>
+                </div>
+
+            </div>
+
+            <label for="newCreditLimit">New Credit Limit (₹)</label>
+
+            <input
+                type="number"
+                id="newCreditLimit"
+                min="0"
+                step="1"
+                required
+                placeholder="Enter new credit limit"
+            >
+
+            <p class="modal-hint">
+                The new limit cannot be lower than the customer's existing credit used.
+            </p>
+
+            <div class="modal-actions">
+                <button type="button" id="cancelCreditEdit" class="secondary-button">
+                    Cancel
+                </button>
+
+                <button type="submit" id="saveCreditLimit" class="primary-button">
+                    Save Credit Limit
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Libraries -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Firebase and APIs -->
+<script src="../js/firebase-config.js"></script>
+<script src="../js/api/api-core.js"></script>
+<script src="../js/api/auth-api.js"></script>
+<script src="../js/api/customer-api.js"></script>
+
+<!-- Admin Scripts -->
+<script src="../js/admin/admin-auth.js"></script>
+<script src="../js/admin/customers.js"></script>
+
+</body>
+</html>
