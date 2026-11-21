@@ -374,6 +374,11 @@ $(document).ready(function () {
     // LOAD CUSTOMER ORDERS
     // =====================================
 
+   
+    // =====================================
+    // LOAD CUSTOMER ORDERS
+    // =====================================
+
     async function loadCustomerOrders() {
         const feedback = $("#ordersFeedback");
         const list = $("#ordersList");
@@ -389,7 +394,15 @@ $(document).ready(function () {
             let documents = [];
 
             if (Array.isArray(response)) {
-                documents = response;
+                // Firestore runQuery returns { document: ... } rows.
+                documents = response
+                    .map(function (row) {
+                        return row?.document || row;
+                    })
+                    .filter(function (document) {
+                        return document && document.fields;
+                    });
+
             } else if (Array.isArray(response?.documents)) {
                 documents = response.documents;
             }
@@ -407,11 +420,21 @@ $(document).ready(function () {
 
             documents.sort(function (a, b) {
                 const dateA = new Date(
-                    readField(a.fields, "createdAt", "timestampValue", 0)
+                    readField(
+                        a.fields,
+                        "createdAt",
+                        "timestampValue",
+                        0
+                    )
                 ).getTime();
 
                 const dateB = new Date(
-                    readField(b.fields, "createdAt", "timestampValue", 0)
+                    readField(
+                        b.fields,
+                        "createdAt",
+                        "timestampValue",
+                        0
+                    )
                 ).getTime();
 
                 return dateB - dateA;
@@ -443,6 +466,7 @@ $(document).ready(function () {
             );
         }
     }
+
 
     // =====================================
     // CANCEL CUSTOMER ORDER

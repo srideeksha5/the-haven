@@ -100,7 +100,6 @@ $(document).ready(function () {
     // ------------------------------------
 
     async function loadBuyNowItems(savedItems) {
-
         const verifiedItems = await Promise.all(
             savedItems.map(async function (item) {
 
@@ -144,11 +143,71 @@ $(document).ready(function () {
     }
 
     // ------------------------------------
+    // MIGRATE GUEST CART TO FIRESTORE
+    // ------------------------------------
+
+    async function migrateGuestCart() {
+        let localCart = {};
+
+        try {
+            localCart = JSON.parse(
+                localStorage.getItem("havenCart") || "{}"
+            );
+        } catch (error) {
+            throw new Error("Your guest cart could not be read.");
+        }
+
+        if (
+            !localCart ||
+            typeof localCart !== "object" ||
+            Array.isArray(localCart)
+        ) {
+            return;
+        }
+
+        const localEntries = Object.entries(localCart);
+
+        if (localEntries.length === 0) {
+            return;
+        }
+
+        for (const [cartKey, item] of localEntries) {
+            const productId = String(
+                item?.id || item?.productId || cartKey
+            );
+
+            const quantity = Number(item?.quantity);
+
+            if (
+                !productId ||
+                !Number.isInteger(quantity) ||
+                quantity <= 0
+            ) {
+                throw new Error(
+                    "An item in your guest cart has invalid details."
+                );
+            }
+
+            await addToCart(productId, quantity);
+
+            delete localCart[cartKey];
+
+            if (Object.keys(localCart).length > 0) {
+                localStorage.setItem(
+                    "havenCart",
+                    JSON.stringify(localCart)
+                );
+            } else {
+                localStorage.removeItem("havenCart");
+            }
+        }
+    }
+
+    // ------------------------------------
     // LOAD FIRESTORE CART
     // ------------------------------------
 
     async function loadFirestoreCart() {
-
         const response = unwrapResponse(
             await getAllCartItems()
         );
@@ -161,27 +220,28 @@ $(document).ready(function () {
             documents = response.documents;
         }
 
-        const items = await Promise.all(
-            documents.map(async function (document) {
+        const items = [];
 
-                const productId = readField(
-                    document,
-                    "productId",
-                    "stringValue",
-                    getDocumentId(document)
-                );
+        for (const document of documents) {
+            const productId = readField(
+                document,
+                "productId",
+                "stringValue",
+                getDocumentId(document)
+            );
 
-                const quantity = readField(
-                    document,
-                    "quantity",
-                    "integerValue",
-                    0
-                );
+            const quantity = readField(
+                document,
+                "quantity",
+                "integerValue",
+                0
+            );
 
-                if (!productId || quantity <= 0) {
-                    return null;
-                }
+            if (!productId || quantity <= 0) {
+                continue;
+            }
 
+            try {
                 const productDocument = unwrapResponse(
                     await getProductById(productId)
                 );
@@ -192,15 +252,24 @@ $(document).ready(function () {
                     quantity
                 );
 
-                if (!product.active) {
-                    return null;
+                if (product.active) {
+                    items.push(product);
                 }
 
-                return product;
-            })
-        );
+            } catch (error) {
+                if (error.response?.status === 404) {
+                    console.warn(
+                        "Cart item references a missing product:",
+                        productId
+                    );
+                    continue;
+                }
 
-        return items.filter(Boolean);
+                throw error;
+            }
+        }
+
+        return items;
     }
 
     // ------------------------------------
@@ -208,20 +277,29 @@ $(document).ready(function () {
     // ------------------------------------
 
     async function loadCheckoutItems() {
-
         const buyNowItems = getBuyNowItems();
 
-        isBuyNow = buyNowItems.length > 0;
+        const localCart = JSON.parse(
+            localStorage.getItem("havenCart") || "{}"
+        );
+
+        const hasGuestCart =
+            localCart &&
+            typeof localCart === "object" &&
+            !Array.isArray(localCart) &&
+            Object.keys(localCart).length > 0;
+
+        if (hasGuestCart) {
+            await migrateGuestCart();
+        }
+
+        isBuyNow = buyNowItems.length > 0 && !hasGuestCart;
 
         if (isBuyNow) {
             checkoutItems = await loadBuyNowItems(buyNowItems);
-        } else {
-            checkoutItems = await loadFirestoreCart();
-        }
-
-        if (isBuyNow) {
             $("#checkoutTitle").text("Buy Now Checkout");
         } else {
+            checkoutItems = await loadFirestoreCart();
             $("#checkoutTitle").text("Order Summary");
         }
 
@@ -233,14 +311,12 @@ $(document).ready(function () {
     // ------------------------------------
 
     function getSubtotal() {
-
         return checkoutItems.reduce(function (total, item) {
             return total + Number(item.price) * Number(item.quantity);
         }, 0);
     }
 
     function getDelivery() {
-
         if (
             checkoutItems.length === 0 ||
             getSubtotal() >= FREE_DELIVERY_LIMIT
@@ -260,7 +336,6 @@ $(document).ready(function () {
     // ------------------------------------
 
     function escapeHtml(value) {
-
         return String(value ?? "").replace(/[&<>"']/g, function (char) {
             return {
                 "&": "&amp;",
@@ -271,163 +346,143 @@ $(document).ready(function () {
             }[char];
         });
     }
+
     // ------------------------------------
-// SAVED ADDRESS MANAGEMENT
-// ------------------------------------
+    // SAVED ADDRESS MANAGEMENT
+    // ------------------------------------
 
-async function loadSavedAddresses() {
+    async function loadSavedAddresses() {
+        const select = $("#savedAddressSelect");
 
-    const select = $("#savedAddressSelect");
+        select.empty();
 
-    select.empty();
+        select.append(
+            $("<option>", {
+                value: "manual",
+                text: "Enter a new address"
+            })
+        );
 
-    select.append(
-        $("<option>", {
-            value: "manual",
-            text: "Enter a new address"
-        })
-    );
+        try {
+            const response = await getSavedAddresses();
 
-    try {
+            savedAddresses = Array.isArray(response)
+                ? response
+                : [];
 
-        const response = await getSavedAddresses();
+            if (savedAddresses.length === 0) {
+                $("#savedAddressFeedback").text(
+                    "You have no saved addresses. Enter a new delivery address below."
+                );
 
-        savedAddresses = Array.isArray(response)
-            ? response
-            : [];
+                return;
+            }
 
-        if (savedAddresses.length === 0) {
+            savedAddresses.forEach(function (address) {
+                const addressLabel = [
+                    address.name,
+                    address.address,
+                    address.city
+                ].filter(Boolean).join(" — ");
+
+                const optionText = addressLabel +
+                    (address.isDefault ? " (Default)" : "");
+
+                select.append(
+                    $("<option>", {
+                        value: address.id,
+                        text: optionText
+                    })
+                );
+            });
 
             $("#savedAddressFeedback").text(
-                "You have no saved addresses. Enter a new delivery address below."
+                savedAddresses.length +
+                " saved address(es) available."
             );
+
+            const defaultAddress = savedAddresses.find(function (address) {
+                return address.isDefault === true;
+            });
+
+            if (defaultAddress) {
+                select.val(defaultAddress.id);
+                fillAddressFields(defaultAddress);
+            }
+
+        } catch (error) {
+            console.error("Saved address loading error:", error);
+
+            savedAddresses = [];
+
+            $("#savedAddressFeedback").text(
+                "Saved addresses could not be loaded. You can enter a new address below."
+            );
+        }
+    }
+
+    // ------------------------------------
+    // FILL DELIVERY ADDRESS FIELDS
+    // ------------------------------------
+
+    function fillAddressFields(address) {
+        if (!address) {
+            return;
+        }
+
+        $("#customerName").val(address.name || "");
+        $("#customerMobile").val(address.mobile || "");
+
+        $("#address").val(address.address || "");
+        $("#city").val(address.city || "");
+        $("#state").val(address.state || "");
+        $("#pincode").val(address.pincode || "");
+
+        clearErrors();
+    }
+
+    // ------------------------------------
+    // SAVED ADDRESS SELECTION
+    // ------------------------------------
+
+    $("#savedAddressSelect").on("change", function () {
+        const selectedId = $(this).val();
+
+        if (selectedId === "manual") {
+            $("#customerName").val("");
+            $("#customerMobile").val("");
+
+            $("#address").val("");
+            $("#city").val("");
+            $("#state").val("");
+            $("#pincode").val("");
+
+            clearErrors();
 
             return;
         }
 
-        savedAddresses.forEach(function (address) {
+        const selectedAddress = savedAddresses.find(function (address) {
+            return address.id === selectedId;
+        });
 
-            const addressLabel = [
-                address.name,
-                address.address,
-                address.city
-            ].filter(Boolean).join(" — ");
+        if (selectedAddress) {
+            fillAddressFields(selectedAddress);
 
-            const optionText = addressLabel +
-                (address.isDefault ? " (Default)" : "");
-
-            select.append(
-                $("<option>", {
-                    value: address.id,
-                    text: optionText
-                })
+            $("#savedAddressFeedback").text(
+                "Saved address selected successfully."
             );
-
-        });
-
-        $("#savedAddressFeedback").text(
-            savedAddresses.length +
-            " saved address(es) available."
-        );
-
-        // Automatically select the default address.
-        const defaultAddress = savedAddresses.find(function (address) {
-            return address.isDefault === true;
-        });
-
-        if (defaultAddress) {
-
-            select.val(defaultAddress.id);
-
-            fillAddressFields(defaultAddress);
-
         }
-
-    } catch (error) {
-
-        console.error("Saved address loading error:", error);
-
-        savedAddresses = [];
-
-        $("#savedAddressFeedback").text(
-            "Saved addresses could not be loaded. You can enter a new address below."
-        );
-
-    }
-}
-
-
-// ------------------------------------
-// FILL DELIVERY ADDRESS FIELDS
-// ------------------------------------
-
-function fillAddressFields(address) {
-
-    if (!address) {
-        return;
-    }
-
-    $("#customerName").val(address.name || "");
-    $("#customerMobile").val(address.mobile || "");
-
-    $("#address").val(address.address || "");
-    $("#city").val(address.city || "");
-    $("#state").val(address.state || "");
-    $("#pincode").val(address.pincode || "");
-
-    clearErrors();
-}
-
-
-// ------------------------------------
-// SAVED ADDRESS SELECTION
-// ------------------------------------
-
-$("#savedAddressSelect").on("change", function () {
-
-    const selectedId = $(this).val();
-
-    if (selectedId === "manual") {
-
-        $("#customerName").val("");
-        $("#customerMobile").val("");
-
-        $("#address").val("");
-        $("#city").val("");
-        $("#state").val("");
-        $("#pincode").val("");
-
-        clearErrors();
-
-        return;
-    }
-
-    const selectedAddress = savedAddresses.find(function (address) {
-        return address.id === selectedId;
     });
-
-    if (selectedAddress) {
-
-        fillAddressFields(selectedAddress);
-
-        $("#savedAddressFeedback").text(
-            "Saved address selected successfully."
-        );
-
-    }
-
-});
 
     // ------------------------------------
     // RENDER ORDER SUMMARY
     // ------------------------------------
 
     function renderSummary() {
-
         $("#checkoutItems").empty();
 
         if (checkoutItems.length === 0) {
-
             $("#checkoutItems").html(
                 '<p class="checkout-empty">Your shopping bag is empty.</p>'
             );
@@ -446,10 +501,8 @@ $("#savedAddressSelect").on("change", function () {
         $("#placeOrderButton").prop("disabled", false);
 
         checkoutItems.forEach(function (item) {
-
             const itemElement = `
                 <div class="checkout-item">
-
                     <img
                         src="${escapeHtml(item.imageUrl)}"
                         alt="${escapeHtml(item.title)}"
@@ -457,7 +510,28 @@ $("#savedAddressSelect").on("change", function () {
 
                     <div>
                         <h3>${escapeHtml(item.title)}</h3>
-                        <p>Quantity: ${Number(item.quantity)}</p>
+
+                        <div class="checkout-quantity-control">
+                            <span>Quantity:</span>
+
+                            <button
+                                type="button"
+                                class="checkout-qty-btn decrease-checkout-qty"
+                                data-id="${escapeHtml(item.productId)}">
+                                −
+                            </button>
+
+                            <span class="checkout-qty-value">
+                                ${Number(item.quantity)}
+                            </span>
+
+                            <button
+                                type="button"
+                                class="checkout-qty-btn increase-checkout-qty"
+                                data-id="${escapeHtml(item.productId)}">
+                                +
+                            </button>
+                        </div>
                     </div>
 
                     <strong class="checkout-item-price">
@@ -465,7 +539,6 @@ $("#savedAddressSelect").on("change", function () {
                             Number(item.price) * Number(item.quantity)
                         )}
                     </strong>
-
                 </div>
             `;
 
@@ -487,6 +560,120 @@ $("#savedAddressSelect").on("change", function () {
     }
 
     // ------------------------------------
+    // CHECKOUT QUANTITY CONTROLS
+    // ------------------------------------
+
+    async function changeCheckoutQuantity(productId, change) {
+        const item = checkoutItems.find(function (product) {
+            return String(product.productId) === String(productId);
+        });
+
+        if (!item) {
+            return;
+        }
+
+        const newQuantity = Number(item.quantity) + change;
+
+        try {
+            // Remove product when minus is clicked at quantity 1.
+            if (newQuantity < 1) {
+                if (isBuyNow) {
+                    const buyNowItems = getBuyNowItems();
+
+                    const updatedItems = buyNowItems.filter(function (savedItem) {
+                        const id = String(
+                            savedItem.productId || savedItem.id
+                        );
+
+                        return id !== String(productId);
+                    });
+
+                    sessionStorage.setItem(
+                        "havenBuyNow",
+                        JSON.stringify(updatedItems)
+                    );
+
+                } else {
+                    await removeFromCart(productId);
+                }
+
+                checkoutItems = checkoutItems.filter(function (product) {
+                    return String(product.productId) !== String(productId);
+                });
+
+                renderSummary();
+
+                return;
+            }
+
+            if (newQuantity > Number(item.qty)) {
+                alert("Available stock limit reached.");
+                return;
+            }
+
+            if (isBuyNow) {
+                const buyNowItems = getBuyNowItems();
+
+                const updatedItems = buyNowItems.map(function (savedItem) {
+                    const id = String(
+                        savedItem.productId || savedItem.id
+                    );
+
+                    return id === String(productId)
+                        ? { ...savedItem, quantity: newQuantity }
+                        : savedItem;
+                });
+
+                sessionStorage.setItem(
+                    "havenBuyNow",
+                    JSON.stringify(updatedItems)
+                );
+
+            } else {
+                await updateCartQuantity(productId, newQuantity);
+            }
+
+            item.quantity = newQuantity;
+
+            renderSummary();
+
+        } catch (error) {
+            console.error("Checkout quantity update failed:", error);
+            alert("Unable to update quantity. Please try again.");
+        }
+    }
+
+    // ------------------------------------
+    // CHECKOUT QUANTITY BUTTON EVENTS
+    // ------------------------------------
+
+    $("#checkoutItems")
+        .off("click", ".decrease-checkout-qty")
+        .on("click", ".decrease-checkout-qty", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const productId = String(
+                $(this).attr("data-id") || ""
+            );
+
+            changeCheckoutQuantity(productId, -1);
+        });
+
+    $("#checkoutItems")
+        .off("click", ".increase-checkout-qty")
+        .on("click", ".increase-checkout-qty", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const productId = String(
+                $(this).attr("data-id") || ""
+            );
+
+            changeCheckoutQuantity(productId, 1);
+        });
+
+    // ------------------------------------
     // FORM ERRORS
     // ------------------------------------
 
@@ -505,7 +692,6 @@ $("#savedAddressSelect").on("change", function () {
     // ------------------------------------
 
     function validateForm() {
-
         clearErrors();
 
         let isValid = true;
@@ -524,15 +710,16 @@ $("#savedAddressSelect").on("change", function () {
         }
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showError("customerEmail", "Enter a valid email address.");
-    isValid = false;
-}
+            showError("customerEmail", "Enter a valid email address.");
+            isValid = false;
+        }
 
         if (!/^[6-9]\d{9}$/.test(mobile)) {
             showError(
                 "customerMobile",
                 "Enter a valid 10-digit Indian mobile number."
             );
+
             isValid = false;
         }
 
@@ -569,19 +756,15 @@ $("#savedAddressSelect").on("change", function () {
     // ------------------------------------
 
     $('input[name="paymentMethod"]').on("change", async function () {
-
         const method = $(this).val();
 
         if (method === "cod") {
-
             $("#paymentNote").text(
                 "You can pay in cash when your order is delivered."
             );
 
         } else {
-
             try {
-
                 const info = await getCustomerCreditInfo();
 
                 $("#paymentNote").text(
@@ -591,7 +774,6 @@ $("#savedAddressSelect").on("change", function () {
                 );
 
             } catch (error) {
-
                 $("#paymentNote").text(
                     "Your available credit could not be retrieved. Please try again."
                 );
@@ -607,7 +789,6 @@ $("#savedAddressSelect").on("change", function () {
     // ------------------------------------
 
     function getCheckoutSignature(address, method) {
-
         return JSON.stringify({
             items: checkoutItems.map(function (item) {
                 return {
@@ -615,6 +796,7 @@ $("#savedAddressSelect").on("change", function () {
                     quantity: item.quantity
                 };
             }),
+
             address: address,
             method: method,
             total: getTotal(),
@@ -627,7 +809,6 @@ $("#savedAddressSelect").on("change", function () {
     // ------------------------------------
 
     async function submitOrder() {
-
         const items = checkoutItems;
 
         if (items.length === 0) {
@@ -658,7 +839,6 @@ $("#savedAddressSelect").on("change", function () {
 
         // Check available credit before creating a credit order.
         if (paymentMethod === "CREDIT") {
-
             const creditInfo = await checkCreditEligibility(total);
 
             if (!creditInfo.eligibleForReview) {
@@ -679,6 +859,7 @@ $("#savedAddressSelect").on("change", function () {
             pendingOrder = JSON.parse(
                 sessionStorage.getItem("havenPendingCheckout") || "null"
             );
+
         } catch (error) {
             pendingOrder = null;
         }
@@ -692,11 +873,9 @@ $("#savedAddressSelect").on("change", function () {
             pendingOrder.signature === signature &&
             pendingOrder.orderId
         ) {
-
             orderId = pendingOrder.orderId;
 
         } else {
-
             const orderItems = items.map(function (item) {
                 return {
                     productId: item.productId,
@@ -740,13 +919,10 @@ $("#savedAddressSelect").on("change", function () {
 
         // Clear only after both order and payment creation succeed.
         if (isBuyNow) {
-
             sessionStorage.removeItem("havenBuyNow");
 
         } else {
-
             await clearCart();
-
             localStorage.removeItem("havenCart");
         }
 
@@ -770,11 +946,9 @@ $("#savedAddressSelect").on("change", function () {
         paymentMethod,
         total
     ) {
-
         const customerName = $("#customerName").val().trim();
 
         $(".checkout-page").html(`
-
             <section class="order-success">
 
                 <div class="success-icon">✓</div>
@@ -848,7 +1022,6 @@ $("#savedAddressSelect").on("change", function () {
     // ------------------------------------
 
     $("#checkoutForm").on("submit", async function (event) {
-
         event.preventDefault();
 
         if (isSubmitting) {
@@ -861,7 +1034,6 @@ $("#savedAddressSelect").on("change", function () {
         }
 
         if (!validateForm()) {
-
             const firstInvalid = document.querySelector(
                 ".form-field .invalid"
             );
@@ -886,11 +1058,9 @@ $("#savedAddressSelect").on("change", function () {
         button.prop("disabled", true).text("Processing order...");
 
         try {
-
             await submitOrder();
 
         } catch (error) {
-
             console.error("Checkout error:", error);
 
             alert(
@@ -901,7 +1071,6 @@ $("#savedAddressSelect").on("change", function () {
             button.prop("disabled", false).text(originalText);
 
         } finally {
-
             isSubmitting = false;
         }
     });
@@ -910,41 +1079,32 @@ $("#savedAddressSelect").on("change", function () {
     // INITIALIZE CHECKOUT
     // ------------------------------------
 
-    // ------------------------------------
-// INITIALIZE CHECKOUT
-// ------------------------------------
-
-async function initializeCheckout() {
-
-    $("#placeOrderButton").prop("disabled", true);
-
-    try {
-
-        // Load saved addresses first.
-        await loadSavedAddresses();
-
-        // Then load cart or Buy Now products.
-        await loadCheckoutItems();
-
-    } catch (error) {
-
-        console.error("Checkout loading error:", error);
-
-        $("#checkoutItems").html(
-            '<p class="checkout-empty">Unable to load your checkout items. Please return to your shopping bag and try again.</p>'
-        );
-
+    async function initializeCheckout() {
         $("#placeOrderButton").prop("disabled", true);
 
-        alert(
-            error.message ||
-            "Unable to load checkout items."
-        );
+        try {
+            // Load saved addresses first.
+            await loadSavedAddresses();
 
+            // Then load cart or Buy Now products.
+            await loadCheckoutItems();
+
+        } catch (error) {
+            console.error("Checkout loading error:", error);
+
+            $("#checkoutItems").html(
+                '<p class="checkout-empty">Unable to load your checkout items. Please return to your shopping bag and try again.</p>'
+            );
+
+            $("#placeOrderButton").prop("disabled", true);
+
+            alert(
+                error.message ||
+                "Unable to load checkout items."
+            );
+        }
     }
 
-}
-
-initializeCheckout();
+    initializeCheckout();
 
 });

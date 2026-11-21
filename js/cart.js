@@ -129,92 +129,152 @@ $(document).ready(function () {
     // LOAD FIRESTORE CART
     // ------------------------------------
 
-    async function loadFirestoreCart() {
+    
+async function loadFirestoreCart() {
 
-        const response = await getAllCartItems();
+    const response = await getAllCartItems();
 
-        let documents = unwrapDocument(response);
+    let documents = unwrapDocument(response);
 
-        if (Array.isArray(documents?.documents)) {
-            documents = documents.documents;
-        }
+    if (Array.isArray(documents?.documents)) {
+        documents = documents.documents;
+    }
 
-        if (!Array.isArray(documents)) {
-            documents = [];
-        }
+    if (!Array.isArray(documents)) {
+        documents = [];
+    }
 
-        const updatedCart = {};
+    const updatedCart = {};
 
-        for (const document of documents) {
+    for (const document of documents) {
 
-            const fields = document.fields || document;
+        const fields = document.fields || document;
 
-            const productId =
-                getField(fields, "productId") ||
-                document.name?.split("/").pop();
+        const productId =
+            getField(fields, "productId") ||
+            document.name?.split("/").pop();
 
-            const quantity = Number(
-                getField(fields, "quantity") || document.quantity || 0
+        const quantity = Number(
+            getField(fields, "quantity") || document.quantity || 0
+        );
+
+        if (!productId || quantity <= 0) continue;
+
+        try {
+
+            const productResponse = await getProductById(productId);
+
+            const product = normalizeProduct(
+                productResponse,
+                productId
             );
 
-            if (!productId || quantity <= 0) continue;
+            if (!product.active || !product.name || product.price <= 0) {
+                await removeFromCart(productId);
+                continue;
+            }
 
-            try {
+            updatedCart[productId] = {
+                ...product,
+                quantity: quantity
+            };
 
-                const productResponse = await getProductById(productId);
+        } catch (error) {
 
-                const product = normalizeProduct(
-                    productResponse,
-                    productId
-                );
+            if (error.response?.status === 404) {
 
-                if (!product.active) continue;
+                console.warn("Removing invalid cart product:", productId);
 
-                updatedCart[productId] = {
-                    ...product,
-                    quantity: quantity
-                };
+                try {
+                    await removeFromCart(productId);
+                } catch (removeError) {
+                    console.error("Could not remove invalid cart item:", removeError);
+                }
 
-            } catch (error) {
-
-                console.warn(
-                    "Could not retrieve product:",
-                    productId,
-                    error
-                );
+            } else {
+                throw error;
             }
         }
-
-        cart = updatedCart;
     }
+
+    cart = updatedCart;
+}
+
 
     // ------------------------------------
     // MIGRATE OLD LOCAL CART TO FIRESTORE
     // ------------------------------------
 
-    async function migrateLocalCart() {
+    
+async function migrateLocalCart() {
 
-        const localCart = getLocalCart();
-        const localItems = Object.values(localCart);
+    const localCart = getLocalCart();
 
-        if (localItems.length === 0) return;
+    const entries = Object.entries(localCart);
 
-        for (const item of localItems) {
+    if (entries.length === 0) return;
 
-            const productId = String(item.id);
+    for (const [key, item] of entries) {
 
-            const quantity = Number(item.quantity);
+        const productId = String(
+            item.id || item.productId || key
+        );
 
-            if (!productId || !Number.isInteger(quantity) || quantity <= 0) {
+        const quantity = Number(item.quantity);
+
+        if (!productId || !Number.isInteger(quantity) || quantity <= 0) {
+            delete localCart[key];
+            localStorage.setItem("havenCart", JSON.stringify(localCart));
+            continue;
+        }
+
+        try {
+
+            const productResponse = await getProductById(productId);
+
+            const product = normalizeProduct(
+                productResponse,
+                productId
+            );
+
+            if (!product.active || !product.name || product.price <= 0) {
+                delete localCart[key];
+                localStorage.setItem("havenCart", JSON.stringify(localCart));
                 continue;
             }
 
             await addToCart(productId, quantity);
-        }
 
-        // Remove local copy only after successful migration.
-        localStorage.removeItem("havenCart");
+            // Remove each item only after successful migration.
+            delete localCart[key];
+
+            if (Object.keys(localCart).length > 0) {
+                localStorage.setItem("havenCart", JSON.stringify(localCart));
+            } else {
+                localStorage.removeItem("havenCart");
+            }
+
+        } catch (error) {
+
+            if (error.response?.status === 404) {
+
+                console.warn("Skipping old invalid guest product:", productId);
+
+                delete localCart[key];
+
+                if (Object.keys(localCart).length > 0) {
+                    localStorage.setItem("havenCart", JSON.stringify(localCart));
+                } else {
+                    localStorage.removeItem("havenCart");
+                }
+
+            } else {
+                throw error;
+            }
+        }
     }
+}
+
 
     // ------------------------------------
     // TOTAL CALCULATIONS
@@ -479,27 +539,26 @@ $(document).ready(function () {
     // PROCEED TO CHECKOUT
     // ------------------------------------
 
-    $("#proceedCheckout").on("click", function () {
+    
+$("#proceedCheckout").on("click", function () {
 
-        if (getCartItems().length === 0) {
-            showToast("Your shopping bag is empty.");
-            return;
-        }
+    if (getCartItems().length === 0) {
+        showToast("Your shopping bag is empty.");
+        return;
+    }
 
-        if (isLoggedIn) {
+    // Clear any old Buy Now selection.
+    // Normal cart checkout must use the shopping cart.
+    sessionStorage.removeItem("havenBuyNow");
 
-            window.location.href = "checkout.html";
+    sessionStorage.setItem("havenReturnTo", "checkout.html");
 
-        } else {
-
-            sessionStorage.setItem(
-                "havenReturnTo",
-                "checkout.html"
-            );
-
-            window.location.href = "auth.html";
-        }
-    });
+    if (isLoggedIn) {
+        window.location.href = "checkout.html";
+    } else {
+        window.location.href = "auth.html";
+    }
+});
 
     // ------------------------------------
     // INITIALIZE CART

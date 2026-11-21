@@ -56,51 +56,69 @@ $(document).ready(function () {
     // Supports both Firestore REST documents and
     // already-converted product objects.
     function getFieldValue(fields, fieldName) {
-        const field = fields?.[fieldName];
+    const field = fields?.[fieldName];
 
-        if (!field) return "";
+    if (field === undefined || field === null) {
+        return "";
+    }
 
+    // Firestore REST API values
+    if (typeof field === "object") {
         if (field.stringValue !== undefined) return field.stringValue;
         if (field.integerValue !== undefined) return Number(field.integerValue);
         if (field.doubleValue !== undefined) return Number(field.doubleValue);
         if (field.booleanValue !== undefined) return field.booleanValue;
-
-        return "";
+        if (field.nullValue !== undefined) return null;
     }
+
+    // Already-converted JavaScript values
+    return field;
+}
 
     function normalizeProduct(item) {
+    const fields = item.fields || item;
 
-        const fields = item.fields || item;
+    const id = item.name
+        ? item.name.split("/").pop()
+        : (item.id || item.productId || "");
 
-        const id = item.name
-            ? item.name.split("/").pop()
-            : (item.id || item.productId || "");
+    const categoryId =
+        getFieldValue(fields, "categoryId") || item.categoryId || "";
 
-        const categoryId = getFieldValue(fields, "categoryId");
-        const title = getFieldValue(fields, "title");
-        const description = getFieldValue(fields, "description");
-        const qty = Number(getFieldValue(fields, "qty"));
-        const price = Number(getFieldValue(fields, "price"));
-        const imageUrl = getFieldValue(fields, "imageUrl");
-        const active = fields.active?.booleanValue !== undefined
-            ? fields.active.booleanValue
-            : fields.active;
+    const title =
+        getFieldValue(fields, "title") || item.title || item.name || "";
 
-        return {
-            id: String(id),
-            name: title || item.name || item.title || "",
-            title: title || item.title || "",
-            description: description || item.description || "",
-            categoryId: categoryId || item.categoryId || "",
-            category: categoryNames[categoryId || item.categoryId] || "Other",
-            price: Number.isFinite(price) ? price : Number(item.price || 0),
-            qty: Number.isFinite(qty) ? qty : Number(item.qty || 0),
-            image: imageUrl || item.imageUrl || item.image || "",
-            imageUrl: imageUrl || item.imageUrl || item.image || "",
-            active: active !== false
-        };
-    }
+    const description =
+        getFieldValue(fields, "description") || item.description || "";
 
+    const rawPrice = getFieldValue(fields, "price");
+    const rawQty = getFieldValue(fields, "qty");
+
+    const price = Number(rawPrice);
+    const qty = Number(rawQty);
+
+    const imageUrl =
+        getFieldValue(fields, "imageUrl") ||
+        item.imageUrl ||
+        item.image ||
+        "";
+
+    const activeValue = getFieldValue(fields, "active");
+
+    return {
+        id: String(id),
+        name: title,
+        title: title,
+        description: description,
+        categoryId: categoryId,
+        category: categoryNames[categoryId] || "Other",
+        price: Number.isFinite(price) ? price : 0,
+        qty: Number.isFinite(qty) ? qty : 0,
+        image: imageUrl,
+        imageUrl: imageUrl,
+        active: activeValue !== false
+    };
+}
     // ------------------------------------
     // LOAD PRODUCTS FROM FIRESTORE
     // ------------------------------------
@@ -114,6 +132,17 @@ $(document).ready(function () {
         try {
 
             const response = await getProducts(100);
+            console.log("PRODUCT API RESPONSE:", response);
+
+const book = (response.documents || response.data?.documents || response)
+    .find(item => {
+        const fields = item.fields || item.document?.fields || item;
+        const title = fields.title?.stringValue || fields.title;
+        return title === "The Psychology of Success";
+    });
+
+console.log("BOOK RAW DATA:", book);
+console.log("BOOK PRICE FIELD:", book?.fields?.price || book?.document?.fields?.price || book?.price);
 
             let documents = [];
 
@@ -428,6 +457,44 @@ $(document).ready(function () {
             behavior: "smooth"
         });
     });
+    // ------------------------------------
+// HEADER CART COUNT
+// ------------------------------------
+
+async function updateHeaderCartCount() {
+
+    const isLoggedIn =
+        sessionStorage.getItem("havenCustomerLoggedIn") === "true";
+
+    if (!isLoggedIn) {
+        const guestCart = JSON.parse(
+            localStorage.getItem("havenCart") || "{}"
+        );
+
+        const count = Object.values(guestCart).reduce(
+            (total, item) => total + Number(item.quantity || 0),
+            0
+        );
+
+        $("#cartCount").text(count);
+        return;
+    }
+
+    try {
+        const documents = await getAllCartItems();
+
+        const count = documents.reduce(function (total, document) {
+            return total + Number(
+                document.fields?.quantity?.integerValue || 0
+            );
+        }, 0);
+
+        $("#cartCount").text(count);
+
+    } catch (error) {
+        console.error("Header cart count error:", error);
+    }
+}
 
     // ------------------------------------
     // CART
@@ -447,7 +514,7 @@ $(document).ready(function () {
             return total + item.price * item.quantity;
         }, 0);
 
-        $("#cartCount").text(totalQuantity);
+        updateHeaderCartCount();
         $("#cartSubtotal").text(currency.format(subtotal));
 
         if (cartProducts.length === 0) {
@@ -507,46 +574,66 @@ $(document).ready(function () {
         });
     }
 
-    $(document).on("click", ".add-to-cart", function () {
+    $(document).on("click", ".add-to-cart", async function () {
 
-        const productId = String($(this).data("id"));
+    const productId = String($(this).data("id"));
 
-        const product = products.find(function (item) {
-            return item.id === productId;
-        });
+    const product = products.find(function (item) {
+        return item.id === productId;
+    });
 
-        if (!product) {
-            showToast("Product could not be found.");
-            return;
-        }
+    if (!product) {
+        showToast("Product could not be found.");
+        return;
+    }
 
-        if (product.qty <= 0) {
-            showToast("This product is out of stock.");
-            return;
-        }
+    if (product.qty <= 0) {
+        showToast("This product is out of stock.");
+        return;
+    }
 
-        if (cart[productId]) {
+    const isLoggedIn =
+        sessionStorage.getItem("havenCustomerLoggedIn") === "true";
 
-            if (cart[productId].quantity >= product.qty) {
-                showToast("Available stock limit reached.");
-                return;
-            }
+    try {
 
-            cart[productId].quantity++;
+        if (isLoggedIn) {
+
+            await addToCart(productId, 1);
+
+            await updateHeaderCartCount();
 
         } else {
 
-            cart[productId] = {
-                ...product,
-                quantity: 1
-            };
+            if (cart[productId]) {
+
+                if (cart[productId].quantity >= product.qty) {
+                    showToast("Available stock limit reached.");
+                    return;
+                }
+
+                cart[productId].quantity++;
+
+            } else {
+
+                cart[productId] = {
+                    ...product,
+                    quantity: 1
+                };
+            }
+
+            updateCart();
         }
 
-        updateCart();
-
         showToast(product.name + " added to your bag.");
-    });
 
+    } catch (error) {
+
+        console.error("Add to cart error:", error);
+
+        showToast("Unable to add product. Please try again.");
+    }
+});
     $(document).on("click", ".increase-quantity", function () {
 
         const id = String($(this).data("id"));
@@ -713,6 +800,7 @@ $(document).ready(function () {
     // ------------------------------------
 
     updateCart();
+    updateHeaderCartCount();
     updateWishlistCount();
     loadProducts();
 

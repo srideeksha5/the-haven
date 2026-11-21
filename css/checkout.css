@@ -491,3 +491,32 @@
     font-weight: 600;
     text-decoration: underline;
 }
+.checkout-quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 7px;
+    font-size: 13px;
+}
+
+.checkout-qty-btn {
+    width: 25px;
+    height: 25px;
+    border: 1px solid #c9bda9;
+    background: transparent;
+    color: #243247;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-qty-btn:hover {
+    background: #e9e0d8;
+}
+
+.checkout-qty-value {
+    min-width: 15px;
+    text-align: center;
+}

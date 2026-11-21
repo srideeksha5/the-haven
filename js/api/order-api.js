@@ -23,6 +23,27 @@ function readOrderField(document, fieldName, fieldType, fallback = null) {
 }
 
 
+/* BUILD VALID FIRESTORE DOCUMENT RESOURCE NAME */
+
+function orderDocumentName(collection, id) {
+
+    const base = String(FIRESTORE_BASE_URL)
+        .replace(/\/+$/, "")
+        .replace(/^https?:\/\/[^/]+\/v1\//, "");
+
+    if (
+        !base.startsWith("projects/") ||
+        !base.endsWith("/documents")
+    ) {
+        throw new Error(
+            "Invalid Firestore document base configuration."
+        );
+    }
+
+    return `${base}/${collection}/${encodeURIComponent(id)}`;
+}
+
+
 /* CONVERT ORDER ITEMS TO FIRESTORE FORMAT */
 
 function serializeOrderItems(items) {
@@ -167,13 +188,6 @@ function getVerifiedOrderItems(items) {
 }
 
 
-/* CREATE ORDER */
-
-
-/* =========================================
-   ATOMIC FIRESTORE COMMIT
-========================================= */
-
 /* =========================================
    ATOMIC FIRESTORE COMMIT
    Retry once after customer token refresh
@@ -235,6 +249,7 @@ function commitOrderWrites(writes, token) {
     });
 
 }
+
 
 /* GENERATE ORDER ID */
 
@@ -345,13 +360,13 @@ function createOrder(items, address, paymentMethod) {
                     integerValue: String(stockChange)
                 };
 
-                // getVerifiedOrderItems currently fetches product
-                // data, but we need updateTime for atomic protection.
+                // Atomic protection using Firestore updateTime.
                 writes.push({
                     update: {
-                        name:
-                            `${FIRESTORE_BASE_URL}/products/` +
-                            encodeURIComponent(productId),
+                        name: orderDocumentName(
+                            "products",
+                            productId
+                        ),
 
                         fields: {
                             qty: fsInt(
@@ -401,9 +416,10 @@ function createOrder(items, address, paymentMethod) {
 
                 update: {
 
-                    name:
-                        `${FIRESTORE_BASE_URL}/orders/` +
-                        encodeURIComponent(orderId),
+                    name: orderDocumentName(
+                        "orders",
+                        orderId
+                    ),
 
                     fields: {
 
@@ -462,9 +478,10 @@ function createOrder(items, address, paymentMethod) {
 
                 return commitOrderWrites(writes, token)
                     .then(() => ({
-                        name:
-                            `${FIRESTORE_BASE_URL}/orders/` +
-                            encodeURIComponent(orderId),
+                        name: orderDocumentName(
+                            "orders",
+                            orderId
+                        ),
 
                         orderId: orderId,
                         totalAmount: totalAmount
@@ -535,9 +552,10 @@ function createOrder(items, address, paymentMethod) {
 
                     update: {
 
-                        name:
-                            `${FIRESTORE_BASE_URL}/customers/` +
-                            encodeURIComponent(uid),
+                        name: orderDocumentName(
+                            "customers",
+                            uid
+                        ),
 
                         fields: {
 
@@ -827,9 +845,10 @@ function buildOrderUpdateWrite(orderId, order, fields, fieldPaths) {
 
     return {
         update: {
-            name:
-                `${FIRESTORE_BASE_URL}/orders/` +
-                encodeURIComponent(orderId),
+            name: orderDocumentName(
+                "orders",
+                orderId
+            ),
 
             fields: fields
         },
@@ -861,9 +880,10 @@ function buildPaymentUpdateWrite(
 
     return {
         update: {
-            name:
-                `${FIRESTORE_BASE_URL}/payments/` +
-                encodeURIComponent(orderId),
+            name: orderDocumentName(
+                "payments",
+                orderId
+            ),
 
             fields: {
                 paymentStatus: fsString(status),
@@ -1034,9 +1054,10 @@ function cancelOrderAndRestoreStock(
 
                 update: {
 
-                    name:
-                        `${FIRESTORE_BASE_URL}/products/` +
-                        encodeURIComponent(product.productId),
+                    name: orderDocumentName(
+                        "products",
+                        product.productId
+                    ),
 
                     fields: {
 
@@ -1187,9 +1208,10 @@ function cancelOrderAndRestoreStock(
 
                     update: {
 
-                        name:
-                            `${FIRESTORE_BASE_URL}/customers/` +
-                            encodeURIComponent(orderCustomerId),
+                        name: orderDocumentName(
+                            "customers",
+                            orderCustomerId
+                        ),
 
                         fields: {
 
